@@ -1,4 +1,4 @@
-import token
+import client_token
 import discord
 from discord.ext import commands, tasks
 import urllib.parse, urllib.request, re
@@ -30,7 +30,7 @@ def startup():
     print()
     print("  # Script          : charity.py")
     print("  # Version         : 1.0rc")
-    print("  # Description     : Versatile moderation bot utilising modern Pythonic Discord API (pypi v1.7.2)")
+    print("  # Description     : Versatile moderation bot utilising modern Pythonic Discord API (PyPi v1.7.2)")
     print("  # Dependencies    : Python 3.5.3 or higher,")
     print("                      Python libraries including discord, PyNaCl (Voice Support)")
     print("                      discord.ext, youtube_dl, googlesearch, beautifulsoup4")
@@ -39,7 +39,7 @@ def startup():
     print("  # Email           : jay.dnb@protonmail.ch")
     print()
     print("=============================================================================")
-    for i in range(3):    
+    for i in range(3):
         for j in range(3):
             if j == 0:
                 print("Logging in.  ", end='', flush=True)
@@ -61,6 +61,142 @@ async def on_ready():
     time.sleep(1)
     print("-----------------------------------------------------------------------------\nLog:")
 
+async def cog_embed(content, colour):
+    edict = {
+        "color" : 0x000000,
+        "author" : {
+            "name" : "",
+            "url" : "",
+            "icon_url" : "",
+        },
+        "title" : "Hello",
+        "url" : "",
+        "thumbnail" : {
+            "url" : ""
+        },
+        "description" : "",
+        "image" : {
+            "url" : ""
+        },
+        "footer" : {
+            "text" : "",
+            "icon_url" : ""
+        },
+        "fields" : [{
+                "name" : "",
+                "value" : ""
+                }
+
+            ],
+        "timestamp" : "2001-07-08T00:00"
+    }
+
+@charity.event
+async def on_member_join(member):
+    await charity.get_channel(830511014302842950).send(f"Welcome to **{member.guild}**, {member.mention} :innocent: Have a great time!")
+
+#----------------------------------------------- # Module poll
+@charity.command()
+@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+async def poll(ctx):
+    poll = {}
+    def check(m):
+        return m.channel == ctx.channel and ctx.author == m.author
+
+    continue_loop = True
+    wizard = await ctx.channel.send("Poll wizard invoked. Type `.cancel` to end the wizard. This will lead to loss of unsaved information. Choose your type of poll:\n`1. Anonymous`\n`2. Non-anonymous`")
+    while continue_loop:
+        reply = await charity.wait_for("message", check = check, timeout = 120)
+        if reply.content == ".cancel":
+            raise Exception("Poll wizard revoked.")
+        elif reply.content == "1":
+            poll["type"] = "anonymous"
+            poll["epoch_t"] = time.time()
+            continue_loop = False
+            await reply.add_reaction('☑️')
+        elif reply.content == "2":
+            poll["type"] = "non-anonymous"
+            poll["epoch_t"] = time.time()
+            continue_loop = False
+            await reply.add_reaction('☑️')
+        else:
+            await ctx.channel.send("Invalid input. Try again.", delete_after = 3)
+        await reply.delete(delay = 3)
+
+    continue_loop = True
+    await wizard.edit(content = "Enter the poll title [question] below.")
+    while continue_loop:
+        reply = await charity.wait_for("message", check = check, timeout = 120)
+        if reply.content == ".cancel":
+            raise Exception("Poll wizard revoked.")
+        else:
+            poll["title"] = reply.content
+            continue_loop = False
+            await reply.add_reaction('☑️')
+        await reply.delete(delay = 3)
+
+    continue_loop = True
+    await wizard.edit(content = "Enter the number of choices. Upto 15 choices supported.")
+    while continue_loop:
+        reply = await charity.wait_for("message", check = check, timeout = 120)
+        if reply.content == ".cancel":
+            raise Exception("Poll wizard revoked.")
+        try:
+            integer = int(reply.content)
+        except TypeError:
+            await ctx.channel.send("Invalid input. Try again.", delete_after = 3)
+            continue
+        if integer > 15:
+            await ctx.channel.send("Invalid input. Try again.", delete_after = 3)
+        else:
+            poll["no_of_choices"] = integer
+            continue_loop = False
+            await reply.add_reaction('☑️')
+        await reply.delete(delay = 3)
+
+    choice_counter = 1
+    choice_list = []
+    while choice_counter != poll["no_of_choices"] + 1:
+        await wizard.edit(content = f"Enter choice #{choice_counter} text.")
+        reply = await charity.wait_for("message", check = check, timeout = 120)
+        if reply.content == ".cancel":
+            raise Exception("Poll wizard revoked.")
+        elif len(reply.content) > 350:
+            await ctx.channel.send("The length of the option's string cannot exceed 350 characters. Try again.", delete_after = 3)
+        else:
+            choice_list.append(reply.content)
+            await reply.add_reaction('☑️')
+            choice_counter += 1
+        await reply.delete(delay = 3)
+
+    continue_loop = True
+    choice_counter = 1
+    choices_dict = {}
+    choice_emotes_def = [
+        "🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮", "🇯", "🇰", "🇱", "🇲", "🇳", "🇴"
+    ]
+    await wizard.edit(content = "Type `.default` to let me assign the default reacts against the requested options, or type `.custom` to continue to the next step of assigning custom reacts.")
+    while continue_loop:
+        reply = await charity.wait_for("message", check = check, timeout = 120)
+        if reply.content == ".cancel":
+            raise Exception("Poll wizard revoked.")
+        elif reply.content == ".default":
+            for i in range(poll["no_of_choices"]):
+                choices_dict[choice_emotes_def[i]] = choice_list[i]
+                await reply.add_reaction('☑️')
+                continue_loop = False
+        elif reply.content == ".custom":
+            pass # to be continued
+        else:
+            await ctx.channel.send("Invalid input. Try again.", delete_after = 3)
+        await reply.delete(delay = 3)
+
+    poll["choices"] = choices_dict
+    print (poll)
+    """ continue_loop = False
+    while continue_loop:
+        await wizard.edit(content = f"React the emote ") """
+        
 #----------------------------------------------- # Module logout
 @charity.command()
 async def logout(ctx):
@@ -80,7 +216,7 @@ warned_for_spam_lvl_2 = {} # next step: warning 3
 warned_for_spam_lvl_3 = {} # next step: mute
 
 # invoke if
-SPAM_WARN_MCOUNT = 5
+SPAM_WARN_MCOUNT = 6
 # within a span of
 SPAM_WARN_TIMEOUT = 10
 LEVEL_0_TIMEOUT = 0
@@ -339,6 +475,15 @@ async def schedule(ctx, tcid, countd, *, msg):
 async def schedule_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
+#----------------------------------------------- # Module unban user
+@charity.command()
+@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+async def unban(ctx, pfid, *, reason):
+    member = ctx.guild.get_member(int(pfid))
+    embed_var = discord.Embed(title = "**:cake: Unban**", colour = 0x67aa30, description = "**Unbanned** {} _(ID: {})_\n**Reason:** {}\n".format(member, member.id, reason))
+    embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
+    embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
+    embed_var.set_thumbnail(url = member.avatar_url)
 #----------------------------------------------- # Module ban user
 @charity.command()
 @commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
@@ -519,6 +664,36 @@ async def cc(ctx):
     embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
     embed_var.set_footer(text = "Solaris Discord Server", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
     await ctx.reply(embed = embed_var)
+    edict = {
+        "color" : 0x000000,
+        "author" : {
+            "name" : "",
+            "url" : "",
+            "icon_url" : "",
+        },
+        "title" : "Hello",
+        "url" : "",
+        "thumbnail" : {
+            "url" : ""
+        },
+        "description" : "",
+        "image" : {
+            "url" : ""
+        },
+        "footer" : {
+            "text" : "",
+            "icon_url" : ""
+        },
+        "fields" : [{
+                "name" : "",
+                "value" : ""
+                }
+
+            ],
+        "timestamp" : "2001-07-08T00:00"
+    }
+    embed = discord.Embed.from_dict(edict)
+    await ctx.reply(embed = embed)
 
 @cc.error
 async def cc_error(ctx, error):
@@ -607,5 +782,5 @@ async def ensure_voice(ctx):
 # ===================== MUSIC.PY ======================
 
 startup()
-charity.run(token.CHARITY_TOKEN)
+charity.run(client_token.CHARITY_TOKEN)
 logger()
