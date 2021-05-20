@@ -4,8 +4,10 @@ from discord.ext import commands, tasks
 import urllib.parse, urllib.request, re
 from googlesearch import search
 import youtube_dl
+import datetime
 import asyncio
 import logging
+import typing
 import time
 
 intents = discord.Intents.all()
@@ -39,65 +41,38 @@ def startup():
     print("  # Email           : jay.dnb@protonmail.ch")
     print()
     print("=============================================================================")
-    for i in range(3):
-        for j in range(3):
-            if j == 0:
-                print("Logging in.  ", end='', flush=True)
-                time.sleep(0.5)
-                print("\b\b\b\b\b\b\b\b\b\b\b\b\b", end='', flush=True)
-            elif j == 1:
-                print("Logging in.. ", end='', flush=True)
-                time.sleep(0.5)
-                print("\b\b\b\b\b\b\b\b\b\b\b\b\b", end='', flush=True)
-            elif j == 2:
-                print("Logging in...", end='', flush=True)
-                time.sleep(0.5)
-                print("\b\b\b\b\b\b\b\b\b\b\b\b\b", end='', flush=True)
-
 
 @charity.event
 async def on_ready():
     print(f"\b\b\b\b\b\b\b\b\b\b\b\b\bLogged in as {charity.user} PFID: {charity.user.id}")
     time.sleep(1)
-    print("-----------------------------------------------------------------------------\nLog:")
+    print("-----------------------------------------------------------------------------")
 
-async def cog_embed(content, colour):
+def cog_embed(ctx, title = "", description = "This is message description.", colour = 0xf71e4b):
     edict = {
-        "color" : 0x000000,
+        "color" : colour,
         "author" : {
-            "name" : "",
-            "url" : "",
-            "icon_url" : "",
+            "name" : "Charity#2894",
+            "icon_url" : "https://cdn.discordapp.com/attachments/841538439606304818/844773173895364608/mSE4lwS.gif",
         },
-        "title" : "Hello",
-        "url" : "",
-        "thumbnail" : {
-            "url" : ""
-        },
-        "description" : "",
-        "image" : {
-            "url" : ""
-        },
+        "title" : title,
+        "description" : description,
         "footer" : {
-            "text" : "",
-            "icon_url" : ""
+            "text" : f"{ctx.guild.name}",
+            "icon_url" : f"{ctx.guild.icon_url}"
         },
-        "fields" : [{
-                "name" : "",
-                "value" : ""
-                }
-
-            ],
-        "timestamp" : "2001-07-08T00:00"
+        "timestamp" : datetime.datetime.utcnow().isoformat()
     }
+    embed = discord.Embed.from_dict(edict)
+    return embed
 
 @charity.event
 async def on_member_join(member):
     await charity.get_channel(830511014302842950).send(f"Welcome to **{member.guild}**, {member.mention} :innocent: Have a great time!")
 
-#----------------------------------------------- # Module poll
+#------------------------------------------------------------------------------------------------------------------- # Module poll
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def poll(ctx):
     poll = {}
     def check(m):
@@ -197,13 +172,39 @@ async def poll(ctx):
     while continue_loop:
         await wizard.edit(content = f"React the emote ") """
         
-#----------------------------------------------- # Module logout
+#------------------------------------------------------------------------------------------------------------------- # Module logout
 @charity.command()
 async def logout(ctx):
     if ctx.author.id == 799186130654199809:
         await ctx.channel.send("Logging out...")
         exit()
-#----------------------------------------------- # Module spam warn
+#------------------------------------------------------------------------------------------------------------------- # Module clr [messages]
+@charity.command()
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+async def clr(ctx, limit, arg = None):
+    limit = int(limit)
+    counter = 0
+    if limit > 200:
+        raise Exception("Limit cannot exceed `200` messages.")
+    if arg == None:
+        await ctx.channel.trigger_typing()
+        counter = await ctx.channel.purge(limit = limit + 1)
+        counter = len(counter)
+    elif arg == "--ignore-pins":
+        await ctx.channel.trigger_typing()
+        async for x in ctx.channel.history(limit = limit + 1):
+            if x.pinned == False:
+                await x.delete()
+                counter += 1
+    else:
+        raise Exception("Invalid argument received.")
+    await ctx.channel.send(f"`{counter} messages purged.` :ballot_box_with_check:", delete_after = 7)
+    
+@clr.error
+async def clr_error(ctx, error):
+    msg = "**ERROR:** {}".format(error)
+    await ctx.reply(msg)
+#------------------------------------------------------------------------------------------------------------------- # Module spam warn
 # under active observation, no threat
 undr_surveillance_lvl_0 = []
 undr_surveillance_lvl_1 = []
@@ -370,8 +371,8 @@ async def invoke_spam_purge_lvl_3(m):
             await m.channel.send("<@{}> Ad majórem Dei glóriam, muted for 60 minutes. :slight_smile:".format(m.author.id))
             undr_surveillance_lvl_3.remove(m.author.id)
             warned_for_spam_lvl_3.pop(m.author.id)
-            user = charity.get_user(m.author.id)
-            await user.send("You have been **muted** for **{} minutes**.\n**INFRACTION:** {}".format(60, "Spamming in public chat."))
+            user = charity.get_member(m.author.id)
+            await user.member("You have been **muted** for **{} minutes**.\n**INFRACTION:** {}".format(60, "Spamming in public chat."))
             embed_var = discord.Embed(title = "**:mute: Mute**", colour = 0xda0000, description = "**Muted** {} _(ID: {})_\n**Reason:** {}\n".format(user, user.id, "Spamming in public chat."))
             embed_var.set_author(name = charity.user, icon_url = charity.user.avatar_url)
             embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
@@ -393,10 +394,10 @@ async def invoke_spam_purge_lvl_3(m):
         if time.time() - time_since_epoch >= SPAM_WARN_TIMEOUT:
             undr_surveillance_lvl_3.remove(m.author.id)
             break
-#----------------------------------------------- # Module afk
+#------------------------------------------------------------------------------------------------------------------- # Module afk
 afk_dump = {}
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def afk(ctx, *, afkstring):
     if "<@" in afkstring:
             await ctx.reply("You cannot tag guild members in your AFK note.")
@@ -433,13 +434,13 @@ async def removeafk(message):
     to_be_popped_dump = []
     for x in afk_dump.keys():
         if message.author.id == x:
-            await message.channel.send("<@{}> `Welcome back, removed your AFK` ✅".format(message.author.id), delete_after = 5)
+            await message.channel.send("<@{}> `Welcome back, removed your AFK` ☑️".format(message.author.id), delete_after = 5)
             to_be_popped_dump.append(message.author.id)
     for y in to_be_popped_dump:
         afk_dump.pop(y)
-#----------------------------------------------- # Module web
+#------------------------------------------------------------------------------------------------------------------- # Module web
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def web(ctx, *, searchstring):
     await ctx.channel.trigger_typing()
     results = search(searchstring, safe='on', tld="com", num=1, stop=1, pause=0.5)
@@ -450,9 +451,9 @@ async def web(ctx, *, searchstring):
 async def web_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module youtube
+#------------------------------------------------------------------------------------------------------------------- # Module youtube
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def yt(ctx, *, search):
     query_string = urllib.parse.urlencode({'search_query': search})
     htm_content = urllib.request.urlopen('http://www.youtube.com/results?' + query_string)
@@ -463,11 +464,11 @@ async def yt(ctx, *, search):
 async def yt_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module announce
+#------------------------------------------------------------------------------------------------------------------- # Module announce
 @charity.command()
 async def schedule(ctx, tcid, countd, *, msg):
     dump_channel = charity.get_channel(int(tcid))
-    await ctx.message.add_reaction("✅")
+    await ctx.message.add_reaction("☑️")
     await asyncio.sleep(60 * int(countd))
     await dump_channel.send(msg)
 
@@ -475,18 +476,27 @@ async def schedule(ctx, tcid, countd, *, msg):
 async def schedule_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module unban user
+#------------------------------------------------------------------------------------------------------------------- # Module unban user
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def unban(ctx, pfid, *, reason):
     member = ctx.guild.get_member(int(pfid))
     embed_var = discord.Embed(title = "**:cake: Unban**", colour = 0x67aa30, description = "**Unbanned** {} _(ID: {})_\n**Reason:** {}\n".format(member, member.id, reason))
     embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
     embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
     embed_var.set_thumbnail(url = member.avatar_url)
-#----------------------------------------------- # Module ban user
+    await ctx.guild.unban(member, reason)
+    await charity.get_channel(840669966621212732).send(embed = embed_var)
+    await member.send("You have been unbanned in Solaris.\n**REASON:** {}".format(reason))
+    await ctx.message.add_reaction("☑️")
+
+@unban.error
+async def ban_error(ctx, error):
+    msg = "**ERROR:** {}".format(error)
+    await ctx.reply(msg)
+#------------------------------------------------------------------------------------------------------------------- # Module ban user
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def ban(ctx, pfid, del_msg_history: int, *, reason):
     member = ctx.guild.get_member(int(pfid))
     embed_var = discord.Embed(title = "**:hammer: Ban**", colour = 0x67aa30, description = "**Banned** {} _(ID: {})_\n**Reason:** {}\n".format(member, member.id, reason))
@@ -494,17 +504,17 @@ async def ban(ctx, pfid, del_msg_history: int, *, reason):
     embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
     embed_var.set_thumbnail(url = member.avatar_url)
     await charity.get_channel(840669966621212732).send(embed = embed_var)
-    await member.send("You have been banned from Solaris Server.\n**REASON:** {}".format(reason))
+    await member.send("You have been banned from Solaris.\n**REASON:** {}".format(reason))
     await ctx.guild.ban(user = member, reason = reason, delete_message_days = del_msg_history)
-    await ctx.message.add_reaction("✅")
+    await ctx.message.add_reaction("☑️")
 
 @ban.error
 async def ban_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module kick user
+#------------------------------------------------------------------------------------------------------------------- # Module kick user
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def kick(ctx, pfid, *, reason):
     user = ctx.guild.get_member(int(pfid))
     embed_var = discord.Embed(title = "**:athletic_shoe: Kick**", colour = 0x67aa30, description = "**Kicked** {} _(ID: {})_\n**Reason:** {}\n".format(user, user.id, reason))
@@ -512,24 +522,24 @@ async def kick(ctx, pfid, *, reason):
     embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
     embed_var.set_thumbnail(url = user.avatar_url)
     await charity.get_channel(840669966621212732).send(embed = embed_var)
-    await user.send("You have been kicked from Solaris Server.\n**REASON:** {}".format(reason))
+    await user.send("You have been kicked from Solaris.\n**REASON:** {}".format(reason))
     await ctx.guild.kick(user = user, reason = reason)
-    await ctx.message.add_reaction("✅")
+    await ctx.message.add_reaction("☑️")
 
 @kick.error
 async def kick_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module Unmute user
+#------------------------------------------------------------------------------------------------------------------- # Module Unmute user
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def unmute(ctx, pfid, *, message_arg: str):
     user = ctx.guild.get_member(int(pfid))
     if "Muted" not in user.roles:
         await ctx.reply("`The user is not muted.`")
         return
     await user.send("You have been **unmuted**.\n**REASON:** {}".format(message_arg))
-    await ctx.message.add_reaction("✅")
+    await ctx.message.add_reaction("☑️")
     embed_var = discord.Embed(title = "**:speaker: Unmute**", colour = 0x67aa30, description = "**Unmuted** {} _(ID: {})_\n**Reason:** {}\n".format(user, user.id, message_arg))
     embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
     embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
@@ -541,11 +551,11 @@ async def unmute(ctx, pfid, *, message_arg: str):
 async def unmute_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module Mute user
+#------------------------------------------------------------------------------------------------------------------- # Module Mute user
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def mute(ctx, pfid, duration, *, message_arg: str):
-    user = charity.get_user(int(pfid))
+    user = ctx.guild.get_member(int(pfid))
     await user.send("You have been **muted** by a moderator for **{} minutes**.\n**INFRACTION:** {}".format(duration, message_arg))
     embed_var = discord.Embed(title = "**:mute: Mute**", colour = 0xda0000, description = "**Muted** {} _(ID: {})_\n**Reason:** {}\n".format(user, user.id, message_arg))
     embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
@@ -556,7 +566,7 @@ async def mute(ctx, pfid, duration, *, message_arg: str):
     muted_role = ctx.guild.get_role(831609804254085200)
     member = ctx.guild.get_member(int(pfid))
     await member.add_roles(muted_role)
-    await ctx.message.add_reaction("✅")
+    await ctx.message.add_reaction("☑️")
     await asyncio.sleep(60 * int(duration))
     await member.remove_roles(muted_role)
     embed_var = discord.Embed(title = "**:speaker: Unmute**", colour = 0x67aa30, description = "**Unmuted** {} _(ID: {})_\n**Reason:** [Mute duration expired.]({})\n".format(user, user.id, ref_msg.jump_url))
@@ -570,13 +580,13 @@ async def mute(ctx, pfid, duration, *, message_arg: str):
 async def mute_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module Warn user
+#------------------------------------------------------------------------------------------------------------------- # Module Warn user
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def warn(ctx, pfid, *, message_arg: str):
     user = charity.get_user(int(pfid))
     await user.send("You have been **warned** by a moderator.\n**INFRACTION:** {}".format(message_arg))
-    await ctx.message.add_reaction("✅")
+    await ctx.message.add_reaction("☑️")
     embed_var = discord.Embed(title = "**:warning: Warning**", colour = 0xff6700, description = "**Warned** {} _(ID: {})_\n**Reason:** {}\n".format(user, user.id, message_arg))
     embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
     embed_var.set_footer(text = "Solaris DS Administration", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
@@ -588,118 +598,89 @@ async def warn(ctx, pfid, *, message_arg: str):
 async def warn_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module DM user
+#------------------------------------------------------------------------------------------------------------------- # Module msg
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
-async def dmsg(ctx, pfid, *, message_arg: str):
-    user = charity.get_user(int(pfid))
-    await user.send(message_arg)
-    await ctx.message.add_reaction("✅")
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+async def msg(
+        ctx,
+        dump: typing.Union[discord.Member, discord.TextChannel],
+        *, args):
+    msg = "" # --msg-content
+    title = ""  # --title
+    description = ""  # --description
+    embed = {}
+    for x in args.split(sep = " "):
+        if x == "--rich-embed":
+            keys = re.findall(r'[-][-][^r].*?[=]', args, re.IGNORECASE)
+            values = re.findall(r'["][^-].*?["]', args, re.IGNORECASE)
+            for i in range(len(keys)):
+                if re.search("msg-content", keys[i], re.IGNORECASE): msg = values[i][1:-1]
+                elif re.search("title", keys[i], re.IGNORECASE): title = values[i][1:-1]
+                elif re.search("description", keys[i], re.IGNORECASE): description = values[i][1:-1]
+            kwargs = {
+                "ctx" : ctx,
+                "title" : title,
+                "description" : description,
+            }
+            embed = cog_embed(**kwargs)
+            await dump.send(content = msg, embed = embed)
+            await ctx.message.add_reaction("☑️")
+            return
+        elif x == "--raw-embed":
+            key = re.findall(r'[-][-][^r].*?[=]', args, re.IGNORECASE)
+            value = re.findall(r'["][^-].*?["]', args, re.IGNORECASE)
+            try:
+                if re.search("description", key[0], re.IGNORECASE): description = value[0][1:-1]
+                else: raise Exception("Invalid argument(s) or value(s) provided.")
+            except:
+                raise Exception("Invalid argument(s) or value(s) provided.")
+            edict = {
+                "color" : 0xf71e4b,
+                "description" : description,
+            }
+            embed = discord.Embed.from_dict(edict)
+            await dump.send(embed = embed)
+            await ctx.message.add_reaction("☑️")
+            return
+    await dump.send(content = args)
+    await ctx.message.add_reaction("☑️")
 
-@dmsg.error
-async def dmsg_error(ctx, error):
+@msg.error
+async def msg_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module cmsgthread
-@charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
-async def cmsgthread(ctx, channel_id):
-    xmsg = "**INFO**: Auto-message thread invoked. All messages sent by you next will be dumped into the channel <#" + channel_id +">. Reply with `.haltcmsgthread` to end the thread."
-    await ctx.reply(xmsg)
-    def check(m):
-        return m.author == ctx.author
-    cmsgflag = 1
-    msg = 0
-    while (cmsgflag == 1):
-        try:
-            msg = await charity.wait_for("message", check=check, timeout = 300)
-        except asyncio.TimeoutError:
-            await ctx.send("**INFO:** `asyncio.TimeoutError` encountered after `300 seconds`. Closing thread...")
-            cmsgflag = 0
-        if msg.content == ".haltcmsgthread":
-            cmsgflag = 0
-            await ctx.send("**INFO:** Thread terminated by <@{}>.".format(ctx.author.id))
-        else:
-            target = charity.get_channel(int(channel_id))
-            await target.send(msg.content)
-
-@cmsgthread.error
-async def cmsgthread_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
-    await ctx.reply(msg)
-#----------------------------------------------- # Module cmsg
-@charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
-async def cmsg(ctx, channel_id, *, msg):
-    target = charity.get_channel(int(channel_id))
-    await target.send(msg)
-    await ctx.message.add_reaction("✅")
-
-@cmsgthread.error
-async def cmsg_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
-    await ctx.reply(msg)
-#----------------------------------------------- # Module Modmail
+#------------------------------------------------------------------------------------------------------------------- # Module Modmail
 @charity.listen("on_message")
 async def on_dmessage(message):
     if not message.guild and message.author.id != charity.user.id:
-        await message.add_reaction("✅")
+        await message.add_reaction("☑️")
         dm_dump_channel = charity.get_channel(840645965949829140)
         await dm_dump_channel.send("**DIRECT MESSAGE FROM <@{}> PFID:** `{}`**:**\n**CONTENT:** {}".format(message.author.id, message.author.id, message.content))
-#----------------------------------------------- # Module hello
+#------------------------------------------------------------------------------------------------------------------- # Module hello
 @charity.command(name = "hello")
 async def say_hello(ctx, arg):
-    if arg.lower() == "charity":
-        await ctx.reply("Hello {}! <:mari_smile:840561703157628938>".format(ctx.author.name))
+    if ctx.author.id == 805108723387334657:
+        await ctx.reply("Hello Momma! Stay safe. <:heartz:844352117674082305>")
+    elif ctx.author.id == 799186130654199809:
+        await ctx.reply("Hey Dad! <:heartz:844352117674082305>")
+    elif arg.lower() == "charity":
+        await ctx.reply("Hello {}! <:orange:841124452283580417>".format(ctx.author.name))
 
 @say_hello.error
 async def say_hello_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#----------------------------------------------- # Module cc (custom commands)
+#------------------------------------------------------------------------------------------------------------------- # Module cc (custom commands)
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682)
-async def cc(ctx):
-    embed_var = discord.Embed(title = "Title", colour = 0xff6700, description = "Description")
-    embed_var.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-    embed_var.set_footer(text = "Solaris Discord Server", icon_url = "https://cdn.discordapp.com/attachments/830787117118521375/836352545965211700/Untitled.png")
-    await ctx.reply(embed = embed_var)
-    edict = {
-        "color" : 0x000000,
-        "author" : {
-            "name" : "",
-            "url" : "",
-            "icon_url" : "",
-        },
-        "title" : "Hello",
-        "url" : "",
-        "thumbnail" : {
-            "url" : ""
-        },
-        "description" : "",
-        "image" : {
-            "url" : ""
-        },
-        "footer" : {
-            "text" : "",
-            "icon_url" : ""
-        },
-        "fields" : [{
-                "name" : "",
-                "value" : ""
-                }
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, "Beta tester")
+async def emsg(ctx, dump_txtchannel, msg, title, description, enable_footer):
+    await cog_embed(ctx = ctx, dump_txtchannel = int(dump_txtchannel), msg = msg, title = title, description = description, enable_footer = bool(enable_footer))
 
-            ],
-        "timestamp" : "2001-07-08T00:00"
-    }
-    embed = discord.Embed.from_dict(edict)
-    await ctx.reply(embed = embed)
-
-@cc.error
-async def cc_error(ctx, error):
+@emsg.error
+async def emsg_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
-#-----------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
 
 # ===================== MUSIC.PY ======================
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -737,14 +718,14 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return filename
 
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def join(ctx):
     """Joins a voice channel"""
     channel = ctx.author.voice.channel
     await channel.connect()
 
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def play(ctx, *, search):
     try :
         server = ctx.message.guild
@@ -765,7 +746,7 @@ async def play(ctx, *, search):
         await ctx.send("**An error occurred :(**")
 
 @charity.command()
-@commands.has_any_role(840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def stop(ctx):
     await ctx.voice_client.disconnect()
 
