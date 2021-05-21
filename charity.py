@@ -44,7 +44,7 @@ def startup():
 
 @charity.event
 async def on_ready():
-    print(f"\b\b\b\b\b\b\b\b\b\b\b\b\bLogged in as {charity.user} PFID: {charity.user.id}")
+    print(f"Logged in as {charity.user} PFID: {charity.user.id}")
     time.sleep(1)
     print("-----------------------------------------------------------------------------")
 
@@ -171,7 +171,6 @@ async def poll(ctx):
     """ continue_loop = False
     while continue_loop:
         await wizard.edit(content = f"React the emote ") """
-        
 #------------------------------------------------------------------------------------------------------------------- # Module logout
 @charity.command()
 async def logout(ctx):
