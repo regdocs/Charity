@@ -2,7 +2,10 @@ import client_token
 import discord
 from discord.ext import commands, tasks
 import urllib.parse, urllib.request, re
+from google_trans_new import google_translator, constant
+from PyDictionary import PyDictionary as Pydict
 from googlesearch import search
+import googletrans
 import youtube_dl
 import datetime
 import asyncio
@@ -48,7 +51,7 @@ async def on_ready():
     time.sleep(1)
     print("-----------------------------------------------------------------------------")
 
-def cog_embed(ctx, title = "", description = "This is message description.", colour = 0xf71e4b):
+def cog_embed(ctx = None, title = "", description = "", colour = 0xf71e4b):
     edict = {
         "color" : colour,
         "author" : {
@@ -70,6 +73,245 @@ def cog_embed(ctx, title = "", description = "This is message description.", col
 async def on_member_join(member):
     await charity.get_channel(830511014302842950).send(f"Welcome to **{member.guild}**, {member.mention} :innocent: Have a great time!")
 
+#------------------------------------------------------------------------------------------------------------------- [Solaris Exclusive]
+@charity.listen("on_message")
+async def vent_out(message):
+    if message.channel.id != 846057832712765490 or message.author == charity.user:
+        return
+    message_obj = message
+    await message.delete(delay = 0.1)
+    msg = message_obj.content
+    key_title = re.findall(r'[-][-][T][I][T][L][E][=]["].*?["]', msg)
+    if len(key_title) == 0:
+        raise Exception("Error in confession syntax")
+    key_title_value = re.findall(r'["].*?[^#]["]', key_title[0])
+    key_title_value = key_title_value[0][1:-1]
+    msg = msg.replace(key_title[0], "")
+    if "--ANONYMOUS" in message.content:
+        msg = msg.replace("--ANONYMOUS", "")
+        edict = {
+        "color" : 0xf71e4b,
+        "author" : {
+            "name" : "Anonymous",
+            "icon_url" : "https://lh3.googleusercontent.com/proxy/Pz5KgTRUmlIUMxxwl48WenO1yVnN-sOD4SJBHHv7LWsW0D5mlvivurY3aQfG4TtFNSW-OW9uIuneOiISBpOimUHqIDmliO0m1lW1H3zSVq7c_Vtg0w"
+        },
+        "title" : key_title_value,
+        "description" : msg,
+        "footer" : {
+            "text" : f"{message.guild.name}",
+            "icon_url" : f"{message.guild.icon_url}"
+        },
+        "timestamp" : datetime.datetime.utcnow().isoformat()
+        }
+        edict = discord.Embed.from_dict(edict) 
+    else:
+        edict = {
+        "color" : 0xf71e4b,
+        "author" : {
+            "name" : f"{message_obj.author}",
+            "icon_url" : f"{message_obj.author.avatar_url}"
+        },
+        "title" : key_title_value,
+        "description" : msg,
+        "footer" : {
+            "text" : f"{message.guild.name}",
+            "icon_url" : f"{message.guild.icon_url}"
+        },
+        "timestamp" : datetime.datetime.utcnow().isoformat()
+        }
+        edict = discord.Embed.from_dict(edict)
+    await message_obj.channel.send(embed = edict)
+    
+#------------------------------------------------------------------------------------------------------------------- # Module define
+@charity.command()
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+async def define(ctx, arg):
+    await ctx.channel.trigger_typing()
+    try: dict = Pydict(arg)
+    except: raise Exception("No results found.")
+
+    meanings = dict.getMeanings()
+    synonyms = dict.synonym(arg)
+    antonyms = dict.antonym(arg)
+
+    keyerror_noun = False
+    keyerror_verb = False
+    keyerror_adverb = False
+    keyerror_adjective = False
+    keyerror_pronoun = False
+    keyerror_preposition = False
+    keyerror_conjunction = False
+    keyerror_interjection = False
+
+    try: noun_meanings = meanings[arg]['Noun']
+    except KeyError: keyerror_noun = True
+    try: noun_meanings = meanings[arg]['Verb']
+    except KeyError: keyerror_verb = True
+    try: noun_meanings = meanings[arg]['Adjective']
+    except KeyError: keyerror_adjective = True
+    try: noun_meanings = meanings[arg]['Adverb']
+    except KeyError: keyerror_adverb = True
+    try: noun_meanings = meanings[arg]['Pronoun']
+    except KeyError: keyerror_pronoun = True
+    try: noun_meanings = meanings[arg]["Proposition"]
+    except KeyError: keyerror_preposition = True
+    try: noun_meanings = meanings[arg]['Conjunction']
+    except KeyError: keyerror_conjunction = True
+    try: noun_meanings = meanings[arg]['Interjection']
+    except KeyError: keyerror_interjection = True
+
+    dsc = "**`Meanings:`**\n"
+    if not keyerror_noun:
+        dsc += "**_Noun:_**\n"
+        for i in range(len(meanings[arg]['Noun'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Noun'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_verb:
+        dsc += "**_Verb:_**\n"
+        for i in range(len(meanings[arg]['Verb'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Verb'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_adjective:
+        dsc += "**_Adjective:_**\n"
+        for i in range(len(meanings[arg]['Adjective'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Adjective'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_adverb:
+        dsc += "**_Adverb:_**\n"
+        for i in range(len(meanings[arg]['Adverb'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Adverb'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_pronoun:
+        dsc += "**_Pronoun:_**\n"
+        for i in range(len(meanings[arg]['Pronoun'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Pronoun'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_preposition:
+        dsc += "**_Preposition:_**\n"
+        for i in range(len(meanings[arg]['Preposition'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Preposition'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_conjunction:
+        dsc += "**_Conjunction:_**\n"
+        for i in range(len(meanings[arg]['Conjunction'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Conjunction'][i]}_\n"
+        dsc += "\n"
+    if not keyerror_interjection:
+        dsc += "**_Interjection:_**\n"
+        for i in range(len(meanings[arg]['Interjection'])):
+            dsc = dsc + f"{i+1}. _{meanings[arg]['Interjection'][i]}_\n"
+        dsc += "\n"
+
+    if len(synonyms) != 0:
+        dsc += "**`Synonyms:`**\n" + ', '.join(synonyms) + "\n\n"
+    if len(antonyms) != 0:
+        dsc += "**`Antonyms:`**\n" + ', '.join(antonyms)
+            
+    embed = cog_embed(
+        ctx = ctx,
+        title = f":book: **Entry: _`{arg.lower()}`_**",
+        description = dsc,
+        colour = 0x38da07
+        )    
+    await ctx.reply(embed = embed)
+
+@define.error
+async def define_error(ctx, error):
+    msg = "`No entries found :(`"
+    await ctx.reply(msg)
+
+#------------------------------------------------------------------------------------------------------------------- # Module translate
+@charity.command()
+@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
+async def translate(ctx, *arg):
+    await ctx.channel.trigger_typing()
+    translator = google_translator()
+    gt_LANGUAGES = constant.LANGUAGES
+    src0 = ""
+    dest0 = ""
+    quick_translate_flag = True
+    match_found = False
+    if len(arg) != 0:
+        for x in range(len(arg)):
+            if arg[x] in gt_LANGUAGES.values() and x <= 1:
+                quick_translate_flag = False
+                break
+        if quick_translate_flag:
+            src0 = "auto"
+            dest0 = "auto"
+            tb_translated = ' '.join(arg)
+            result = translator.translate(tb_translated, lang_src = src0, lang_tgt = dest0, pronounce = True)
+            embed = cog_embed(
+            ctx = ctx,
+            title = f":books: Translating to **ENGLISH**",
+            description = f"**`Source:`** _{tb_translated}_\n\n**`Translation:`** _{result[0]}_",
+            colour = 0x38da07
+            )
+            await ctx.reply(embed = embed)
+            return
+        src0 = arg[0]
+        dest0 = arg[1]
+        args = ' '.join(arg[2:])
+        if src0 == "english": src0 = "en"
+        else:
+            for i in gt_LANGUAGES.values():
+                src0_lower = src0.lower()
+                if src0_lower == i:
+                    for x, y in gt_LANGUAGES.items():
+                        if y == i:
+                            src0 = x
+                            match_found = True
+                            break
+        if dest0 == "english": dest0 = "en"
+        else:
+            for i in gt_LANGUAGES.values():
+                dest0_lower = dest0.lower()
+                if dest0_lower == i:
+                    for x, y in gt_LANGUAGES.items():
+                        if y == i:
+                            dest0 = x
+                            match_found = True
+                            break
+        if src0.lower() == "chinese":
+            src0 = "zh-cn"
+            match_found = True
+        if dest0.lower() == "chinese":
+            dest0 = "zh-cn"
+            match_found = True
+    else:
+        src0 = "auto"
+        dest0 = "auto"
+        tb_translated = await ctx.fetch_message(ctx.message.reference.message_id)
+        result = translator.translate(tb_translated.content, lang_src = src0, lang_tgt = dest0, pronounce = True)
+        embed = cog_embed(
+        ctx = ctx,
+        title = f":books: Translating to **ENGLISH**",
+        description = f"**`Source:`** _{tb_translated.content}_\n\n**`Translation:`** _{result[0]}_",
+        colour = 0x38da07
+        )
+        await tb_translated.reply(embed = embed, mention_author = False)
+        return
+    if not match_found:
+        raise Exception("Invalid arguments provided.")
+    result = translator.translate(args, lang_src = src0, lang_tgt = dest0, pronounce = True)
+    pronounce_src = result[1]
+    pronounce_dest = result[2]
+    if pronounce_src == None:
+        pronounce_src = ":warning: N/A"
+    if pronounce_dest == None:
+        pronounce_dest = ":warning: N/A"
+    embed = cog_embed(
+        ctx = ctx,
+        title = f":books: Translating from **{gt_LANGUAGES[src0].upper()}** to **{gt_LANGUAGES[dest0].upper()}**",
+        description = f"**`Source:`** _{args}_\n**`Source pronunciation:`** _{pronounce_src}_\n\n**`Translation:`** _{result[0]}_\n**`Translation pronunciation:`** _{pronounce_dest}_",
+        colour = 0x38da07,
+        )
+    await ctx.reply(embed = embed)
+
+@translate.error
+async def translate_error(ctx, error):
+    msg = "**ERROR:** {}".format(error)
+    await ctx.reply(msg)
 #------------------------------------------------------------------------------------------------------------------- # Module poll
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
@@ -397,12 +639,15 @@ async def invoke_spam_purge_lvl_3(m):
 afk_dump = {}
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
-async def afk(ctx, *, afkstring):
-    if "<@" in afkstring:
-            await ctx.reply("You cannot tag guild members in your AFK note.")
+async def afk(ctx, *afkstring):
+    if len(ctx.message.raw_mentions) != 0:
+            await ctx.reply(":warning: `You cannot tag guild members in your AFK note.`")
             return
+    afkstring = ' '.join(afkstring)
+    if len(afkstring) == 0: afkstring = "No reason specified."
     await ctx.message.add_reaction("🌙")
-    await asyncio.sleep(5)
+    await ctx.channel.send(f"**{ctx.author.mention} Set you AFK.** :ballot_box_with_check:")
+    await asyncio.sleep(3)
     afk_dump[ctx.message.author.id] = afkstring
 
 @afk.error
@@ -414,17 +659,13 @@ async def afk_error(ctx, error):
 async def ifpingonafk(message):
     if  message.author == charity.user:
         return
-    if len(afk_dump.keys()) == 0 or "<@" not in message.content:
+    if len(afk_dump.keys()) == 0 or len(message.mentions) == 0:
         return
-    afk_dump_key_state = afk_dump.keys()
     notif_msg_array = []
-    for x in afk_dump_key_state:
-        if "<@{}>".format(str(x)) in message.content:
-            msg = await message.channel.send("`{} is AFK:` _{}_".format(charity.get_user(x).name, afk_dump.get(x)))
+    for x in afk_dump.keys():
+        if message.guild.get_member(x) in message.mentions:
+            msg = await message.channel.send("**{}** is AFK: _{}_".format(message.guild.get_member(x).name, afk_dump.get(x)), delete_after = 5)
             notif_msg_array.append(msg)
-    await asyncio.sleep(5)
-    for y in notif_msg_array:
-        await y.delete()
 
 @charity.listen("on_message")
 async def removeafk(message):
@@ -662,21 +903,15 @@ async def say_hello(ctx, arg):
         await ctx.reply("Hello Momma! Stay safe. <:heartz:844352117674082305>")
     elif ctx.author.id == 799186130654199809:
         await ctx.reply("Hey Dad! <:heartz:844352117674082305>")
+    elif ctx.author.id == 819439855880372246:
+        await ctx.reply("Hello son of WhiteFang of Hidden Leaf, Disciple of YellowFlash, Sixth Hokage of Leaf, The Copy Ninja, Hatake Kakashi of Sharingan! <:drake_yes:830863359716229160>")
+    elif ctx.author.id == 798549177755107329:
+        await ctx.reply("Hello Aunt! <:slsm:845359515570667550>")
     elif arg.lower() == "charity":
         await ctx.reply("Hello {}! <:orange:841124452283580417>".format(ctx.author.name))
 
 @say_hello.error
 async def say_hello_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
-    await ctx.reply(msg)
-#------------------------------------------------------------------------------------------------------------------- # Module cc (custom commands)
-@charity.command()
-@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, "Beta tester")
-async def emsg(ctx, dump_txtchannel, msg, title, description, enable_footer):
-    await cog_embed(ctx = ctx, dump_txtchannel = int(dump_txtchannel), msg = msg, title = title, description = description, enable_footer = bool(enable_footer))
-
-@emsg.error
-async def emsg_error(ctx, error):
     msg = "**ERROR:** {}".format(error)
     await ctx.reply(msg)
 #-------------------------------------------------------------------------------------------------------------------
