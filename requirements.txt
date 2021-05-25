@@ -1,0 +1,6 @@
+PyDictionary
+google_trans_new
+discord.py
+discord.py[voice]
+youtube-dl
+google
