@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from startup import *
+import asyncio
 
 afk_dump = {}
 @charity.command()
