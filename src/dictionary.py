@@ -1,5 +1,6 @@
 import discord
 from PyDictionary import PyDictionary as Pydict
+from embed_generator import *
 from discord.ext import commands
 from startup import *
 
@@ -97,6 +98,6 @@ async def define(ctx, arg):
 
 @define.error
 async def define_error(ctx, error):
-    msg = "`No entries found :(`"
+    msg = error
     await ctx.reply(msg)
 

@@ -1,6 +1,7 @@
 import discord
 from google_trans_new import google_translator, constant
 from discord.ext import commands, tasks
+from embed_generator import *
 from startup import *
 
 @charity.command()
