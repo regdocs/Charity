@@ -19,6 +19,7 @@ from modmail import *
 from mute import *
 from poll import *
 from purge import *
+from reply import *
 from startup import *
 from translate import *
 from unban import *
