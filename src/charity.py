@@ -15,7 +15,7 @@ from hello import *
 from kick import *
 from message import *
 from modmail import *
-from music import *
+# from music import *
 from mute import *
 from poll import *
 from purge import *
