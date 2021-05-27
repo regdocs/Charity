@@ -50,8 +50,8 @@ async def reply(
     dump = 0
     channel_id = jump_url[-37:][0:18]
     for i in ctx.guild.text_channels:
-        if i.id == channel_id:
-            dump = i.fetch_message(jump_url[-18:])
+        if i.id == int(channel_id):
+            dump = await i.fetch_message(jump_url[-18:])
             break
     await dump.reply(content = args)
     await ctx.message.add_reaction("☑️")
