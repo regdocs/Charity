@@ -47,7 +47,12 @@ async def reply(
             await dump.send(embed = embed)
             await ctx.message.add_reaction("☑️")
             return
-    dump = charity.get_channel(jump_url[-37:][0:18]).fetch_message(jump_url[-18:])
+    dump = 0
+    channel_id = jump_url[-37:][0:18]
+    for i in ctx.guild.text_channels:
+        if i.id == channel_id:
+            dump = i.fetch_message(jump_url[-18:])
+            break
     await dump.reply(content = args)
     await ctx.message.add_reaction("☑️")
 
