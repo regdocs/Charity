@@ -4,3 +4,5 @@ discord.py
 discord.py[voice]
 youtube-dl
 google
+dnspython
+pymongo
