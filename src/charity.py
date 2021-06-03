@@ -1,35 +1,51 @@
-import client_token
 import discord
 from discord.ext import commands, tasks
 import typing
 import time
 
-from afk import *
-from announce import *
-from antispam import *
-from ban import *
-from confession import *
-from dictionary import *
-from embed_generator import *
-from hello import *
-from kick import *
-from message import *
-from modmail import *
-# from music import *
-from mute import *
-from poll import *
-from purge import *
-from reply import *
-from startup import *
-from translate import *
-from unban import *
-from unmute import *
-from warn import *
-from web import *
-from welcome import *
-from youtube import *
+# API & RDBMS boot
+from ch_boot.client_token import *
+from ch_boot.startup import *
+from ch_boot.on_guild_join import *
 
-logger()
+# welcome
+from ch_welcome.welcome import *           # | requires setup
+
+# utilities
+from ch_utilities.afk import *
+from ch_utilities.dictionary import *
+from ch_utilities.poll import *
+from ch_utilities.translate import *
+from ch_utilities.web import *
+from ch_utilities.youtube import *
+
+# automod
+from ch_automod.antimassmention import *   # | requires setup
+from ch_automod.antispam import *          # | requires setup
+
+# moderation
+from ch_moderation.warn import *
+from ch_moderation.mute import *              
+from ch_moderation.unmute import *            
+from ch_moderation.kick import *              
+from ch_moderation.ban import *               
+from ch_moderation.tban import *              
+from ch_moderation.unban import *
+from ch_moderation.modmail_v2 import *        # | requires setup
+from ch_moderation.purge_message import *
+from ch_moderation.modlogger import *            # | requires setup
+from ch_moderation.message import *
+from ch_moderation.reply import *
+from ch_moderation.schedule import *
+
+# fun
+from ch_fun.hello import *
+
+# solaris exclusive
+from ch_solaris.modmail import *
+from ch_solaris.confession import *
+
+# ----------------------------------------
 startup()
 
 @charity.event
@@ -38,4 +54,4 @@ async def on_ready():
     time.sleep(1)
     print("-----------------------------------------------------------------------------")
 
-charity.run(client_token.CHARITY_TOKEN)
+charity.run(CHARITY_TOKEN)
