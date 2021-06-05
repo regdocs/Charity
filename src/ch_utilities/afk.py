@@ -1,48 +1,71 @@
 import discord
 from discord.ext import commands
 from ch_boot.startup import *
-import asyncio
 from ch_boot.cmongodb import *
+import asyncio
+import typing
+import re
 
-afk_dump = {}
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
-async def afk(ctx, *afkstring):
-    if len(ctx.message.raw_mentions) != 0:
-            await ctx.reply(":warning: `You cannot tag guild members in your AFK note.`")
+async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
+    gconfig = clc_gconfig.find_one({"_id" : ctx.guild.id})
+    if gconfig["utilities_config"]["afk_config"]["bool_mentions_allowed"] == True:
+        if len(ctx.message.raw_mentions) != 0:
+            await ctx.reply(":warning: `You cannot mention your friends in your AFK note.`")
             return
-    afkstring = ' '.join(afkstring)
-    if len(afkstring) == 0: afkstring = "No reason specified."
+    maxlength = gconfig["utilities_config"]["afk_config"]["afk_note_max_length"]
+    if len(afkstring) > maxlength:
+        await ctx.reply(f":warning: `Your AFK note cannot exceed {maxlength} characters.`")
+        return
+    if gconfig["utilities_config"]["afk_config"]["bool_link_allowed"] == True:
+        regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+        url = re.findall(regex, afkstring)
+        if len(url) != 0:
+            await ctx.reply(":warning: `Your AFK note cannot contain links.`")
+            return
+    entry = {
+        u"_id" : ctx.author.id,
+        u"afk_note" : u"{}".format(afkstring)
+    }
     await ctx.message.add_reaction("🌙")
-    await ctx.channel.send(f"**{ctx.author.mention} Set you AFK.** :ballot_box_with_check:")
+    await ctx.channel.send(f"**{ctx.author.mention} `Set your AFK`** :ballot_box_with_check:")
     await asyncio.sleep(3)
-    afk_dump[ctx.message.author.id] = afkstring
+    retrieved = clc_afk.find_one({"_id" : ctx.author.id})
+    if retrieved != None:
+        clc_afk.update_one({"_id" : ctx.author.id}, {"$set" : {u"afk_note" : u"{}".format(afkstring)}})
+    else:
+        clc_afk.insert_one(entry)
 
 @afk.error
 async def afk_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = "**:skull_crossbones: `An unexpected error occured. Contact the developers to file a bug report.`**"
     await ctx.reply(msg)
 
 @charity.listen("on_message")
 async def ifpingonafk(message):
     if  message.author == charity.user:
         return
-    if len(afk_dump.keys()) == 0 or len(message.mentions) == 0:
+    if len(message.mentions) == 0:
         return
-    notif_msg_array = []
-    for x in afk_dump.keys():
-        if message.guild.get_member(x) in message.mentions:
-            msg = await message.channel.send("**{}** is AFK: _{}_".format(message.guild.get_member(x).name, afk_dump.get(x)), delete_after = 5)
-            notif_msg_array.append(msg)
+    all_mentions = [i for i in message.mentions]
+    def return_discordMember_from_mention(member: typing.Optional[discord.Member]):
+        return member
+    for x in all_mentions:
+        member = return_discordMember_from_mention(x)
+        retrieved = clc_afk.find_one({"_id" : x.id})
+        if retrieved is not None:
+            if retrieved["afk_note"] == '\0':
+                await message.channel.send(f"**`{member.display_name} is AFK and umm, they didn't leave a note`** :smiling_face_with_tear:")
+            else:
+                await message.channel.send(f"**`{member.display_name} is AFK:`** {retrieved['afk_note']}")
 
 @charity.listen("on_message")
 async def removeafk(message):
-    if len(afk_dump.keys()) == 0:
+    retrieved = clc_afk.find_one({"_id" : message.author.id})
+    if retrieved != None and message.content.startswith(";afk"):
         return
-    to_be_popped_dump = []
-    for x in afk_dump.keys():
-        if message.author.id == x:
-            await message.channel.send("<@{}> `Welcome back, removed your AFK` ☑️".format(message.author.id), delete_after = 5)
-            to_be_popped_dump.append(message.author.id)
-    for y in to_be_popped_dump:
-        afk_dump.pop(y)
+    if retrieved == None:
+        return
+    await message.channel.send(f"{message.author.mention} **`Welcome back, removed your AFK`** ☑️", delete_after = 5)
+    clc_afk.delete_one(retrieved)
