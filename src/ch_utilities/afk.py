@@ -10,7 +10,7 @@ import re
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
     gconfig = clc_gconfig.find_one({"_id" : ctx.guild.id})
-    if gconfig["utilities_config"]["afk_config"]["bool_mentions_allowed"] == True:
+    if gconfig["utilities_config"]["afk_config"]["bool_mentions_allowed"] == False:
         if len(ctx.message.raw_mentions) != 0:
             await ctx.reply(":warning: `You cannot mention your friends in your AFK note.`")
             return
@@ -18,7 +18,7 @@ async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
     if len(afkstring) > maxlength:
         await ctx.reply(f":warning: `Your AFK note cannot exceed {maxlength} characters.`")
         return
-    if gconfig["utilities_config"]["afk_config"]["bool_link_allowed"] == True:
+    if gconfig["utilities_config"]["afk_config"]["bool_link_allowed"] == False:
         regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
         url = re.findall(regex, afkstring)
         if len(url) != 0:
