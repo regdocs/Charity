@@ -12,7 +12,7 @@ async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
     gconfig = clc_gconfig.find_one({"_id" : ctx.guild.id})
     if gconfig["utilities_config"]["afk_config"]["bool_mentions_allowed"] == False:
         if len(ctx.message.raw_mentions) != 0:
-            await ctx.reply(":warning: `You cannot mention your friends in your AFK note.`")
+            await ctx.reply(":warning: `You cannot mention guild members in your AFK note.`")
             return
     maxlength = gconfig["utilities_config"]["afk_config"]["afk_note_max_length"]
     if len(afkstring) > maxlength:
