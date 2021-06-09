@@ -3,6 +3,7 @@ from discord.ext import commands
 from ch_discord_utils.embed_generator import *
 from ch_boot.startup import *
 import typing
+import re
 
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
