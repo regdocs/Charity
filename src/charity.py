@@ -38,6 +38,7 @@ from ch_fun.hello import *
 # solaris exclusive
 from ch_solaris.modmail import *
 from ch_solaris.confession import *
+from ch_solaris.momma import *
 
 # Boot
 from ch_boot.startup import *
