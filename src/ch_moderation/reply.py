@@ -3,6 +3,7 @@ from discord.ext import commands
 from ch_discord_utils.embed_generator import *
 from ch_boot.startup import *
 import typing
+import re
 
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
@@ -23,11 +24,18 @@ async def reply(
                 elif re.search("title", keys[i], re.IGNORECASE): title = values[i][1:-1]
                 elif re.search("description", keys[i], re.IGNORECASE): description = values[i][1:-1]
             kwargs = {
-                "ctx" : ctx,
                 "title" : title,
                 "description" : description,
+                "footer_text" : ctx.guild.name,
+                "footer_icon_url" : ctx.guild.icon_url
             }
-            embed = cog_embed(**kwargs)
+            embed = create_embed(**kwargs)
+            dump = 0
+            channel_id = jump_url[-37:][0:18]
+            for i in ctx.guild.text_channels:
+                if i.id == int(channel_id):
+                    dump = await i.fetch_message(jump_url[-18:])
+                    break
             await dump.send(content = msg, embed = embed)
             await ctx.message.add_reaction("☑️")
             return
@@ -44,6 +52,12 @@ async def reply(
                 "description" : description,
             }
             embed = discord.Embed.from_dict(edict)
+            dump = 0
+            channel_id = jump_url[-37:][0:18]
+            for i in ctx.guild.text_channels:
+                if i.id == int(channel_id):
+                    dump = await i.fetch_message(jump_url[-18:])
+                    break
             await dump.send(embed = embed)
             await ctx.message.add_reaction("☑️")
             return
@@ -58,5 +72,5 @@ async def reply(
 
 @reply.error
 async def msg_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = "**`You lack the required permissions to perform the task.`**"
     await ctx.reply(msg)
