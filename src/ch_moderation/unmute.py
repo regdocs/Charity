@@ -24,7 +24,8 @@ async def unmute(ctx, member: discord.Member, *, message_arg: str):
     if gconfig["moderation_config"]["mute_config"]["bool_remove_existing_roles_and_reassign"]:
         for x in retrieved["active_timed_infractions"]:
             if x["penalty"] == "mute":
-                await member.add_roles(x["r@ini_tse"])
+                t = [ ctx.guild.get_role(i) for i in x["r@ini_tse"] ]
+                await member.add_roles()
     tse = time.time()
     clc_usrinfract.update_one(
         {
