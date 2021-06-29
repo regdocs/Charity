@@ -7,7 +7,6 @@ import typing
 import re
 
 @charity.command()
-@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
     gconfig = clc_gconfig.find_one({"_id" : ctx.guild.id})
     if gconfig["utilities_config"]["afk_config"]["bool_mentions_allowed"] == False:
