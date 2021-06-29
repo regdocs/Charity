@@ -16,7 +16,8 @@ async def mute(ctx, member: discord.Member, duration: float, *, message_arg: str
     if ctx.guild.get_role(mute_role_id) in member.roles:
         raise Exception("The member is already muted.")
     roles_at_ini_tse = member.roles
-    if gconfig["moderation_config"]["mute_config"]["bool_remove_existing_roles_and_reassign"]:
+    roles_at_ini_tse.pop(0)
+    if gconfig['moderation_config']['mute_config']['bool_remove_existing_roles_and_reassign']:
         await member.remove_roles(*roles_at_ini_tse)
     await ch_mute(
         issuer = ctx.author,
@@ -75,8 +76,8 @@ async def mute(ctx, member: discord.Member, duration: float, *, message_arg: str
         }
         clc_usrinfract.insert_one(infract_obj)
     await ctx.message.add_reaction("☑️")
-""" 
+
 @mute.error
 async def mute_error(ctx, error):
     msg = error
-    await ctx.reply(msg) """
+    await ctx.reply(msg)

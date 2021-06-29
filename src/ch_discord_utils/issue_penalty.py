@@ -82,7 +82,7 @@ async def ch_mute(issuer: typing.Union[discord.Member, discord.User], server_id,
     guild = charity.get_guild(server_id)
     member = guild.get_member(member_id)
     gconfig = clc_gconfig.find_one({"_id" : server_id})
-    muted_role = guild.get_role(gconfig["mute_config"]["bool_guild_mute_role_id"])
+    muted_role = guild.get_role(gconfig["mute_config"]["guild_mute_role_id"])
     if muted_role == None: raise Exception("Mute role hasn't been setup for this server.")
     await member.add_roles(muted_role)
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been muted for *{duration} minute(s)*" + ("" if reason == None else f"\n**INFRACTION:** {reason}")))
