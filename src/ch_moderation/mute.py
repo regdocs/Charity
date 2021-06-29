@@ -67,7 +67,7 @@ async def mute(ctx, member: discord.Member, duration: float, *, message_arg: str
                     "ini_tse" : tse,
                     "infraction" : f'{message_arg}',
                     "termination_tse" : duration * 60 + tse,
-                    "r@ini_tse" : roles_at_ini_tse
+                    "r@ini_tse" : [ x.id for x in roles_at_ini_tse ]
                 }
             ],
             "infractions_record" : [
