@@ -1,20 +1,54 @@
 import discord
 import datetime
 
-def cog_embed(ctx = None, title = "", description = "", colour = 0xf71e4b):
+def create_embed(
+    author_name = "Charity#2894",
+    author_url = "",
+    author_icon_url = "https://cdn.discordapp.com/attachments/841538439606304818/844773173895364608/mSE4lwS.gif",
+    title = "",
+    title_url = "",
+    thumbnail_url = "",
+    description = "",
+    image_url = "",
+    footer_text = "",
+    footer_icon_url = "",
+    timestamp = datetime.datetime.utcnow().isoformat(),
+    colour = 0xf71e4b
+    ):
     edict = {
         "color" : colour,
         "author" : {
-            "name" : "Charity#2894",
-            "icon_url" : "https://cdn.discordapp.com/attachments/841538439606304818/844773173895364608/mSE4lwS.gif",
+            "name" : author_name,
+            "url" : author_url,
+            "icon_url" : author_icon_url,
         },
         "title" : title,
-        "description" : description,
-        "footer" : {
-            "text" : f"{ctx.guild.name}",
-            "icon_url" : f"{ctx.guild.icon_url}"
+        "url" : title_url,
+        "thumbnail" : {
+            "url" : thumbnail_url
         },
-        "timestamp" : datetime.datetime.utcnow().isoformat()
+        "description" : description,
+        "image" : {
+            "url" : image_url
+        },
+        "footer" : {
+            "text" : footer_text,
+            "icon_url" : footer_icon_url
+        },
+        "timestamp" : timestamp
+    }
+    embed = discord.Embed.from_dict(edict)
+    return embed
+
+def meta_message(
+    description = "",
+    image_url = ""
+    ):
+    edict  = {
+        "description" : description,
+        "image" : {
+            "url" : image_url
+        }
     }
     embed = discord.Embed.from_dict(edict)
     return embed

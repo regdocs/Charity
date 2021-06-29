@@ -12,5 +12,5 @@ async def schedule(ctx, tcid, countd, *, msg):
 
 @schedule.error
 async def schedule_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)

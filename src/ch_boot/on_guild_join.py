@@ -9,101 +9,93 @@ async def on_guild_join(guild):
         return
     
     new_config = {
-        u"_id" : guild.id,
+        "_id" : guild.id,
         
         # for analysis and mass-exit
-        u"bool_attempted_setup" : False,
-        u"bool_setup" : False,
+        "bool_attempted_setup" : False,
+        "bool_setup" : False,
 
         # the following are given the permission to handle the bot
         # permission for guild administrators are enabled by default
-        u"bot_handlers_roles" : [],
+        "bot_handlers_roles" : [],
 
-        u"automod_config" : {
+        "automod_config" : {
             # anti mass-mention module configuration
-            u"antimassmention_config" : {
-                u"module_active" : False,
-                u"massmention_threshold" : 8
+            "antimassmention_config" : {
+                "module_active" : False,
+                "massmention_threshold" : 8,
+                "massmention_warn_reason" : "Mass-mentioning guild members",
+                "massmention_warn_record_timeout" : 60,
             },
             
             # antispam module configuration
-            u"antispam_config" : {
-                u"module_active" : False,
-                u"spam_filter_text_channel_exceptions" : [],
-                u"spam_warn_msg_count" : 8,
-                u"spam_warn_timeout" : 10,
-                u"penalty" : 0, # penalty is 0 for mute, 1 for kick, 2 for ban 
-                # warning level 1
-                u"spam_warn_reason" : u"Spamming in public chat",
-                u"spam_warn_duration" : 60,
-                # mute level 2
-                u"spam_mute_duration" : 60,
-                u"spam_mute_reason" : u"Spamming in public chat",
-                # kick level 3
-                u"spam_kick_reason" : u"Spamming in public chat",
-                # ban level 4
-                u"spam_ban_reason" : u"Spamming in public chat",
-                u"def_spam_ban_history_delete_daycount" : 0,    # this is a default argument
-                u"spam_ban_duration" : 7 # days
+            "antispam_config" : {
+                "module_active" : False,
+                "spam_filter_text_channel_exceptions" : [],
+                "spam_warn_msg_count" : 8,
+                "spam_warn_timeout" : 10,
+                "spam_warn_reason" : "Spamming in public chat",
+                "spam_warn_record_timeout" : 60,
             },
         },
 
-        u"moderation_config" : {
+        "moderation_config" : {
             # modmail module configuration
-            u"modmail_v2_config": {
-                u"module_active" : False,
-                u"modmail_category_id" : None,
-                u"modmail_log_dump_text_channel_id" : None
+            "modmail_v2_config": {
+                "module_active" : False,
+                "modmail_category_id" : None,
+                "modmail_log_dump_text_channel_id" : None
             },
 
             # logger module configuration
-            u"logger_config" : {
-                u"module_active" : False,
-                u"logger_log_dump_text_channel_id" : None,
-                u"bool_on_message_delete" : False,
-                u"bool_on_bulk_message_delete" : False,
-                u"bool_on_message_edit" : False,
-                u"bool_on_guild_channel_create" : False,
-                u"bool_on_guild_channel_delete" : False,
-                u"bool_on_member_join" : False,
-                u"bool_on_member_remove" : False,
-                u"bool_on_member_update" : False,
-                u"bool_on_guild_role_create" : False,
-                u"bool_on_guild_role_delete" : False,
-                u"bool_nonapi_warn" : False,
-                u"bool_nonapi_mute" : False,
-                u"bool_on_member_ban" : False,
-                u"bool_on_member_unban" : False,
-                u"bool_on_invite_create" : False, 
-                u"bool_on_voice_state_update" : False,
+            "logger_config" : {
+                "module_active" : False,
+                "logger_log_dump_text_channel_id" : None,
+                "bool_on_message_delete" : False,
+                "bool_on_bulk_message_delete" : False,
+                "bool_on_message_edit" : False,
+                "bool_on_guild_channel_create" : False,
+                "bool_on_guild_channel_delete" : False,
+                "bool_on_member_join" : False,
+                "bool_on_member_remove" : False,
+                "bool_on_member_update" : False,
+                "bool_on_guild_role_create" : False,
+                "bool_on_guild_role_delete" : False,
+                "bool_nonapi_warn" : False,
+                "bool_nonapi_mute" : False,
+                "bool_on_member_ban" : False,
+                "bool_on_member_unban" : False,
+                "bool_on_invite_create" : False, 
+                "bool_on_voice_state_update" : False,
             },
 
             # infractions module [warn] log configuration
-            u"warn_config" : {
+            "warn_config" : {
                 # :(
             },
 
             # infractions module [mute] log configuration
-            u"mute_config" : {
-                u"bool_guild_mute_role_id" : None
+            "mute_config" : {
+                "guild_mute_role_id" : None,
+                "bool_remove_existing_roles_and_reassign" : True
             },
 
             # infractions module [ban] log configuration
-            u"ban_config" : {
-                u"def_ban_history_delete_daycount" : 0
+            "ban_config" : {
+                "def_ban_history_delete_daycount" : 0
             },
 
             # infractions module [temporary ban] log configuration
-            u"tban_config" : {
-                u"def_tban_history_delete_daycount" : 0
+            "tban_config" : {
+                "def_tban_history_delete_daycount" : 0
             }
         },
 
-        u"utilities_config" : {
-            u"afk_config" : {
-                u"afk_note_max_length" : 100,
-                u"bool_link_allowed" : False,
-                u"bool_mentions_allowed" : False
+        "utilities_config" : {
+            "afk_config" : {
+                "afk_note_max_length" : 100,
+                "bool_link_allowed" : False,
+                "bool_mentions_allowed" : False
             }
         }
     }

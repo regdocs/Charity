@@ -13,5 +13,5 @@ async def web(ctx, *, searchstring):
 
 @web.error
 async def web_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)

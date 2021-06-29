@@ -17,5 +17,5 @@ async def say_hello(ctx, arg):
 
 @say_hello.error
 async def say_hello_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)

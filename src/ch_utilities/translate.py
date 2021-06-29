@@ -24,11 +24,12 @@ async def translate(ctx, *arg):
             dest0 = "auto"
             tb_translated = ' '.join(arg)
             result = translator.translate(tb_translated, lang_src = src0, lang_tgt = dest0, pronounce = True)
-            embed = cog_embed(
-            ctx = ctx,
-            title = f":books: Translating to **ENGLISH**",
-            description = f"**`Source:`** _{tb_translated}_\n\n**`Translation:`** _{result[0]}_",
-            colour = 0x38da07
+            embed = create_embed(
+                title = f":books: Translating to **ENGLISH**",
+                description = f"**`Source:`** _{tb_translated}_\n\n**`Translation:`** _{result[0]}_",
+                colour = 0x38da07,
+                footer_text = ctx.guild.name,
+                footer_icon_url = ctx.guild.icon_url
             )
             await ctx.reply(embed = embed)
             return
@@ -66,11 +67,12 @@ async def translate(ctx, *arg):
         dest0 = "auto"
         tb_translated = await ctx.fetch_message(ctx.message.reference.message_id)
         result = translator.translate(tb_translated.content, lang_src = src0, lang_tgt = dest0, pronounce = True)
-        embed = cog_embed(
-        ctx = ctx,
-        title = f":books: Translating to **ENGLISH**",
-        description = f"**`Source:`** _{tb_translated.content}_\n\n**`Translation:`** _{result[0]}_",
-        colour = 0x38da07
+        embed = create_embed(
+            title = f":books: Translating to **ENGLISH**",
+            description = f"**`Source:`** _{tb_translated.content}_\n\n**`Translation:`** _{result[0]}_",
+            colour = 0x38da07,
+            footer_text = ctx.guild.name,
+            footer_icon_url = ctx.guild.icon_url
         )
         await tb_translated.reply(embed = embed, mention_author = False)
         return
@@ -83,15 +85,16 @@ async def translate(ctx, *arg):
         pronounce_src = ":warning: N/A"
     if pronounce_dest == None:
         pronounce_dest = ":warning: N/A"
-    embed = cog_embed(
-        ctx = ctx,
-        title = f":books: Translating from **{gt_LANGUAGES[src0].upper()}** to **{gt_LANGUAGES[dest0].upper()}**",
-        description = f"**`Source:`** _{args}_\n**`Source pronunciation:`** _{pronounce_src}_\n\n**`Translation:`** _{result[0]}_\n**`Translation pronunciation:`** _{pronounce_dest}_",
-        colour = 0x38da07,
+    embed = create_embed(
+            title = f":books: Translating from **{gt_LANGUAGES[src0].upper()}** to **{gt_LANGUAGES[dest0].upper()}**",
+            description = f"**`Source:`** _{args}_\n**`Source pronunciation:`** _{pronounce_src}_\n\n**`Translation:`** _{result[0]}_\n**`Translation pronunciation:`** _{pronounce_dest}_",
+            colour = 0x38da07,
+            footer_text = ctx.guild.name,
+            footer_icon_url = ctx.guild.icon_url
         )
     await ctx.reply(embed = embed)
 
 @translate.error
 async def translate_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)

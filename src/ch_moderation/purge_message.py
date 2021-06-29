@@ -25,5 +25,5 @@ async def clr(ctx, limit, arg = None):
     
 @clr.error
 async def clr_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)

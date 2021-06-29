@@ -24,11 +24,12 @@ async def msg(
                 elif re.search("title", keys[i], re.IGNORECASE): title = values[i][1:-1]
                 elif re.search("description", keys[i], re.IGNORECASE): description = values[i][1:-1]
             kwargs = {
-                "ctx" : ctx,
                 "title" : title,
                 "description" : description,
+                "footer_text" : ctx.guild.name,
+                "footer_icon_url" : ctx.guild.icon_url
             }
-            embed = cog_embed(**kwargs)
+            embed = create_embed(**kwargs)
             await dump.send(content = msg, embed = embed)
             await ctx.message.add_reaction("☑️")
             return
@@ -53,5 +54,5 @@ async def msg(
 
 @msg.error
 async def msg_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)

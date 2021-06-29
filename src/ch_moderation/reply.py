@@ -72,5 +72,5 @@ async def reply(
 
 @reply.error
 async def msg_error(ctx, error):
-    msg = "**`You lack the required permissions to perform the task.`**"
-    await ctx.reply(msg + error)
+    msg = error
+    await ctx.reply(msg)

@@ -88,11 +88,12 @@ async def define(ctx, arg):
     if len(antonyms) != 0:
         dsc += "**`Antonyms:`**\n" + ', '.join(antonyms)
             
-    embed = cog_embed(
-        ctx = ctx,
+    embed = create_embed(
         title = f":book: **Entry: _`{arg.lower()}`_**",
         description = dsc,
-        colour = 0x38da07
+        colour = 0x38da07,
+        footer_text = ctx.guild.name,
+        footer_icon_url = ctx.guild.icon_url
         )    
     await ctx.reply(embed = embed)
 

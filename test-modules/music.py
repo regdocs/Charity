@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import youtube_dl
 import urllib.parse, urllib.request, re
-from startup import *
+from startup import * # include run('token')
 
 # ===================== MUSIC.PY ======================
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -40,14 +40,12 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return filename
 
 @charity.command()
-@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def join(ctx):
     """Joins a voice channel"""
     channel = ctx.author.voice.channel
     await channel.connect()
 
 @charity.command()
-@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def play(ctx, *, search):
     try :
         server = ctx.message.guild
@@ -68,7 +66,6 @@ async def play(ctx, *, search):
         await ctx.send("**An error occurred :(**")
 
 @charity.command()
-@commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def stop(ctx):
     await ctx.voice_client.disconnect()
 

@@ -3,7 +3,7 @@ from ch_boot.client_token import *
 from ch_boot.on_guild_join import *
 
 # welcome
-from ch_welcome.welcome import *           # | requires setup
+from ch_welcome.welcome import *               # | requires setup
 
 # utilities
 from ch_utilities.afk import *
@@ -16,6 +16,7 @@ from ch_utilities.youtube import *
 # automod
 from ch_automod.antimassmention import *       # | requires setup
 from ch_automod.antispam import *              # | requires setup
+from ch_automod.bgt_sweeper import *           # | background process
 
 # moderation
 from ch_moderation.warn import *

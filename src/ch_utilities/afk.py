@@ -39,7 +39,7 @@ async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
 
 @afk.error
 async def afk_error(ctx, error):
-    msg = "**:skull_crossbones: `An unexpected error occured. Contact the developers to file a bug report.`**"
+    msg = "**:skull_crossbones: `An unexpected error occured.`**"
     await ctx.reply(msg)
 
 @charity.listen("on_message")

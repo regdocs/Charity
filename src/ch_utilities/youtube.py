@@ -13,5 +13,5 @@ async def yt(ctx, *, search):
 
 @yt.error
 async def yt_error(ctx, error):
-    msg = "**ERROR:** {}".format(error)
+    msg = error
     await ctx.reply(msg)
