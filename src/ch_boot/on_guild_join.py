@@ -63,6 +63,7 @@ async def on_guild_join(guild):
                 "bool_on_guild_role_delete" : False,
                 "bool_nonapi_warn" : False,
                 "bool_nonapi_mute" : False,
+                "bool_on_member_kick" : False,
                 "bool_on_member_ban" : False,
                 "bool_on_member_unban" : False,
                 "bool_on_invite_create" : False, 
