@@ -20,8 +20,8 @@ async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, 
             if duration == None:
                 await dump.send(
                     embed = create_embed(
-                        author_name = issuer.name,
-                        author_icon_url = issuer.avatar_url,
+                        author_name = f"{issuer}",
+                        author_icon_url = f"{issuer.avatar_url}",
                         title = "**:hammer: Ban**",
                         description = f"**Banned** {user} _(ID: `{user.id}`)_\n**Reason:** {reason}\n",
                         colour = 0x67aa30
@@ -30,8 +30,8 @@ async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, 
             else:
                 await dump.send(
                     embed = create_embed(
-                        author_name = issuer.name,
-                        author_icon_url = issuer.avatar_url,
+                        author_name = f"{issuer}",
+                        author_icon_url = f"{issuer.avatar_url}",
                         title = "**:hammer: Temporary Ban**",
                         description = f"**Banned** {user} _(ID: `{user.id}`)_ for {duration} day(s)\n**Reason:** {reason}\n",
                         colour = 0x67aa30
@@ -55,8 +55,8 @@ async def ch_unban(issuer: typing.Union[discord.Member, discord.User], server_id
                     title = "**:cake: Unban**",
                     description = f"**Unbanned** {user} _(ID: `{user.id}`)_\n**Reason:** {reason}\n",
                     colour = 0x67aa30,
-                    author_name = issuer.name,
-                    author_icon_url = issuer.avatar_url
+                    author_name = f"{issuer}",
+                    author_icon_url = f"{issuer.avatar_url}"
                 )
             )
 
@@ -73,8 +73,8 @@ async def ch_warn(issuer: typing.Union[discord.Member, discord.User], server_id,
                     title = "**:warning: Warning**",
                     description = f"**Warned** {user} _(ID: `{user.id}`)_\n**Reason:** {reason}\n",
                     colour = 0xff6700,
-                    author_name = issuer.name,
-                    author_icon_url = issuer.avatar_url
+                    author_name = f"{issuer}",
+                    author_icon_url = f"{issuer.avatar_url}"
                 )
             )
 
@@ -93,8 +93,8 @@ async def ch_mute(issuer: typing.Union[discord.Member, discord.User], server_id,
                     title = "**:mute: Mute**",
                     description = f"**Muted** {member} _(ID: `{member.id}`)_" + ("" if duration == None else f" for {duration} minute(s)") + f"\n**Reason:** {reason}\n",
                     colour = 0xff6700,
-                    author_name = issuer.name,
-                    author_icon_url = issuer.avatar_url
+                    author_name = f"{issuer}",
+                    author_icon_url = f"{issuer.avatar_url}"
                 )
             )
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been muted for *{duration} minute(s)*" + ("" if reason == None else f"\n**INFRACTION:** {reason}")))
@@ -114,8 +114,8 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
                     title = "**:speaker: Unmute**",
                     description = f"**Unmuted** {member} _(ID: `{member.id}`)_\n**Reason:** {reason}\n",
                     colour = 0xff6700,
-                    author_name = issuer.name,
-                    author_icon_url = issuer.avatar_url
+                    author_name = f"{issuer}",
+                    author_icon_url = f"{issuer.avatar_url}"
                 )
             )
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been unmuted." + ("" if reason == None else f"\n**REASON:** {reason}")))
@@ -132,8 +132,8 @@ async def ch_kick(issuer: typing.Union[discord.Member, discord.User], server_id,
                     title = "**:mans_shoe: Kick**",
                     description = f"**Kicked** {member} _(ID: `{member.id}`)_\n**Reason:** {reason}\n",
                     colour = 0xff6700,
-                    author_name = issuer.name,
-                    author_icon_url = issuer.avatar_url
+                    author_name = f"{issuer}",
+                    author_icon_url = f"{issuer.avatar_url}"
                 )
             )
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been kicked." + ("" if reason == None else f"\n**REASON:** {reason}")))
