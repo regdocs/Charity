@@ -111,7 +111,7 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
     muted_role = guild.get_role(gconfig["moderation_config"]["mute_config"]["guild_mute_role_id"])
     if muted_role == None: raise Exception("Mute role hasn't been setup for this server.")
     await member.remove_roles(muted_role)
-    doc = clc_usrinfract.find({"guild_id" : server_id, "user_id" : member_id}):
+    doc = clc_usrinfract.find({"guild_id" : server_id, "user_id" : member_id})
     for i in doc["active_timed_infractions"]:
         if i["penalty"] == "mute":
             await member.add_roles(*i["r@ini_tse"])
