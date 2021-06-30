@@ -24,7 +24,8 @@ async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, 
                         author_icon_url = f"{issuer.avatar_url}",
                         title = "**:hammer: Ban**",
                         description = f"**Banned** {user} _(ID: `{user.id}`)_\n**Reason:** {reason}\n",
-                        colour = 0x67aa30
+                        colour = 0x67aa30,
+                        thumbnail_url = f"{user.avatar_url}"
                     )
                 )
             else:
@@ -34,7 +35,8 @@ async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, 
                         author_icon_url = f"{issuer.avatar_url}",
                         title = "**:hammer: Temporary Ban**",
                         description = f"**Banned** {user} _(ID: `{user.id}`)_ for {duration} day(s)\n**Reason:** {reason}\n",
-                        colour = 0x67aa30
+                        colour = 0x67aa30,
+                        thumbnail_url = f"{user.avatar_url}"
                     )
                 )
 
@@ -56,7 +58,8 @@ async def ch_unban(issuer: typing.Union[discord.Member, discord.User], server_id
                     description = f"**Unbanned** {user} _(ID: `{user.id}`)_\n**Reason:** {reason}\n",
                     colour = 0x67aa30,
                     author_name = f"{issuer}",
-                    author_icon_url = f"{issuer.avatar_url}"
+                    author_icon_url = f"{issuer.avatar_url}",
+                    thumbnail_url = f"{user.avatar_url}"
                 )
             )
 
@@ -74,7 +77,8 @@ async def ch_warn(issuer: typing.Union[discord.Member, discord.User], server_id,
                     description = f"**Warned** {user} _(ID: `{user.id}`)_\n**Reason:** {reason}\n",
                     colour = 0xff6700,
                     author_name = f"{issuer}",
-                    author_icon_url = f"{issuer.avatar_url}"
+                    author_icon_url = f"{issuer.avatar_url}",
+                    thumbnail_url = f"{user.avatar_url}"
                 )
             )
 
@@ -94,7 +98,8 @@ async def ch_mute(issuer: typing.Union[discord.Member, discord.User], server_id,
                     description = f"**Muted** {member} _(ID: `{member.id}`)_" + ("" if duration == None else f" for {duration} minute(s)") + f"\n**Reason:** {reason}\n",
                     colour = 0xff6700,
                     author_name = f"{issuer}",
-                    author_icon_url = f"{issuer.avatar_url}"
+                    author_icon_url = f"{issuer.avatar_url}",
+                    thumbnail_url = f"{member.avatar_url}"
                 )
             )
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been muted for *{duration} minute(s)*" + ("" if reason == None else f"\n**INFRACTION:** {reason}")))
@@ -106,6 +111,11 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
     muted_role = guild.get_role(gconfig["moderation_config"]["mute_config"]["guild_mute_role_id"])
     if muted_role == None: raise Exception("Mute role hasn't been setup for this server.")
     await member.remove_roles(muted_role)
+    query = { "active_timed_infractions" : { "$elemMatch" : { "penalty" : "mute" } } }
+    for doc in clc_usrinfract.find(query):
+        for i in doc["active_timed_infractions"]:
+            if i["penalty"] == "mute":
+                await member.add_roles(*i["r@ini_tse"])
     if gconfig["moderation_config"]["logger_config"]["module_active"]:
         if gconfig["moderation_config"]["logger_config"]["bool_nonapi_mute"]:
             dump = charity.get_channel(gconfig["moderation_config"]["logger_config"]["logger_log_dump_text_channel_id"])
@@ -115,7 +125,8 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
                     description = f"**Unmuted** {member} _(ID: `{member.id}`)_\n**Reason:** {reason}\n",
                     colour = 0xff6700,
                     author_name = f"{issuer}",
-                    author_icon_url = f"{issuer.avatar_url}"
+                    author_icon_url = f"{issuer.avatar_url}",
+                    thumbnail_url = f"{member.avatar_url}"
                 )
             )
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been unmuted." + ("" if reason == None else f"\n**REASON:** {reason}")))
@@ -133,7 +144,8 @@ async def ch_kick(issuer: typing.Union[discord.Member, discord.User], server_id,
                     description = f"**Kicked** {member} _(ID: `{member.id}`)_\n**Reason:** {reason}\n",
                     colour = 0xff6700,
                     author_name = f"{issuer}",
-                    author_icon_url = f"{issuer.avatar_url}"
+                    author_icon_url = f"{issuer.avatar_url}",
+                    thumbnail_url = f"{member.avatar_url}"
                 )
             )
     await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been kicked." + ("" if reason == None else f"\n**REASON:** {reason}")))
