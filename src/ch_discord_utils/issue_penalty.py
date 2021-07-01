@@ -111,10 +111,12 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
     muted_role = guild.get_role(gconfig["moderation_config"]["mute_config"]["guild_mute_role_id"])
     if muted_role == None: raise Exception("Mute role hasn't been setup for this server.")
     await member.remove_roles(muted_role)
-    doc = clc_usrinfract.find({"guild_id" : server_id, "user_id" : member_id})
-    for i in doc["active_timed_infractions"]:
-        if i["penalty"] == "mute":
-            await member.add_roles(*i["r@ini_tse"])
+    if gconfig['moderation_config']['mute_config']['bool_remove_existing_roles_and_reassign']:
+        for doc in clc_usrinfract.find({"guild_id" : server_id, "user_id" : member_id}):
+            for i in doc["active_timed_infractions"]:
+                if i["penalty"] == "mute":
+                    role_list = [guild.get_role(y) for y in i['r@ini_tse']]
+                    await member.add_roles(*role_list)
     if gconfig["moderation_config"]["logger_config"]["module_active"]:
         if gconfig["moderation_config"]["logger_config"]["bool_nonapi_mute"]:
             dump = charity.get_channel(gconfig["moderation_config"]["logger_config"]["logger_log_dump_text_channel_id"])
