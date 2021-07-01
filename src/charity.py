@@ -12,6 +12,7 @@ from ch_utilities.poll import *
 from ch_utilities.translate import *
 from ch_utilities.web import *
 from ch_utilities.youtube import *
+from ch_utilities.songlyrics import *
 
 # automod
 from ch_automod.antimassmention import *       # | requires setup

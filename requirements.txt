@@ -6,3 +6,4 @@ youtube-dl
 google
 dnspython
 pymongo
+lyricsgenius
