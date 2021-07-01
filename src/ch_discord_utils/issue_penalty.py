@@ -7,7 +7,12 @@ import typing
 async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, member_id, reason = None, duration = None, delete_message_days = 0):
     guild = charity.get_guild(server_id)
     user = charity.get_user(member_id)
-    await user.send(embed = meta_message(description = "**`{}:`** You have been *banned*" + ("" if duration == None else f" for *{duration} day(s)*") + ".\n**`INFRACTION:`** {}".format(guild.name, reason)))
+    await user.send(
+        embed = meta_message(
+            description = "**`{}:`** You have been *banned*" + ("" if duration == None else f" for *{duration} day(s)*") + ".\n**`INFRACTION:`** {}".format(guild.name, reason),
+            colour = 0xff0000
+            )
+        )
     await guild.ban(
         user = user,
         reason = reason,
@@ -47,7 +52,12 @@ async def ch_unban(issuer: typing.Union[discord.Member, discord.User], server_id
         user = user,
         reason = reason,
     )
-    await user.send(embed = meta_message(description = "**`{}:`** You have been *unbanned*.\n**`REASON:`** {}".format(guild.name, reason)))
+    await user.send(
+        embed = meta_message(
+            description = "**`{}:`** You have been *unbanned*.\n**`REASON:`** {}".format(guild.name, reason),
+            colour = 0xff0000
+            )
+        )
     gconfig = clc_gconfig.find_one({"_id" : server_id})
     if gconfig["moderation_config"]["logger_config"]["module_active"]:
         if gconfig["moderation_config"]["logger_config"]["bool_on_member_unban"]:
@@ -66,7 +76,12 @@ async def ch_unban(issuer: typing.Union[discord.Member, discord.User], server_id
 async def ch_warn(issuer: typing.Union[discord.Member, discord.User], server_id, member_id, reason = None):
     guild = charity.get_guild(server_id)
     user = charity.get_user(member_id)
-    await user.send(embed = meta_message(description = "**`{}:`** You have been *warned*.\n**`INFRACTION:`** {}".format(guild.name, reason)))
+    await user.send(
+        embed = meta_message(
+            description = "**`{}:`** You have been *warned*.\n**`INFRACTION:`** {}".format(guild.name, reason),
+            colour = 0xff0000
+            )
+        )
     gconfig = clc_gconfig.find_one({"_id" : server_id})
     if gconfig["moderation_config"]["logger_config"]["module_active"]:
         if gconfig["moderation_config"]["logger_config"]["bool_nonapi_warn"]:
@@ -102,7 +117,12 @@ async def ch_mute(issuer: typing.Union[discord.Member, discord.User], server_id,
                     thumbnail_url = f"{member.avatar_url}"
                 )
             )
-    await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been muted for *{duration} minute(s)*" + ("" if reason == None else f"\n**INFRACTION:** {reason}")))
+    await member.send(
+        embed = meta_message(
+            description = f"**`{guild.name}:`** You have been muted for *{duration} minute(s)*" + ("" if reason == None else f"\n**INFRACTION:** {reason}"),
+            colour = 0xff0000
+            )
+        )
 
 async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_id, member_id, reason = None):
     guild = charity.get_guild(server_id)
@@ -130,7 +150,12 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
                     thumbnail_url = f"{member.avatar_url}"
                 )
             )
-    await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been unmuted." + ("" if reason == None else f"\n**REASON:** {reason}")))
+    await member.send(
+        embed = meta_message(
+            description = f"**`{guild.name}:`** You have been unmuted." + ("" if reason == None else f"\n**REASON:** {reason}"),
+            colour = 0xff0000
+            )
+        )
 
 async def ch_kick(issuer: typing.Union[discord.Member, discord.User], server_id, member_id, reason = None):
     guild = charity.get_guild(server_id)
@@ -149,5 +174,10 @@ async def ch_kick(issuer: typing.Union[discord.Member, discord.User], server_id,
                     thumbnail_url = f"{member.avatar_url}"
                 )
             )
-    await member.send(embed = meta_message(description = f"**`{guild.name}:`** You have been kicked." + ("" if reason == None else f"\n**REASON:** {reason}")))
+    await member.send(
+        embed = meta_message(
+            description = f"**`{guild.name}:`** You have been kicked." + ("" if reason == None else f"\n**REASON:** {reason}"),
+            colour = 0xff0000
+            )
+        )
     await guild.kick(member, reason = reason)
