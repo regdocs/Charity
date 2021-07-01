@@ -116,6 +116,7 @@ async def ch_unmute(issuer: typing.Union[discord.Member, discord.User], server_i
             for i in doc["active_timed_infractions"]:
                 if i["penalty"] == "mute":
                     role_list = [guild.get_role(y) for y in i['r@ini_tse']]
+                    print(role_list)
                     await member.add_roles(*role_list)
     if gconfig["moderation_config"]["logger_config"]["module_active"]:
         if gconfig["moderation_config"]["logger_config"]["bool_nonapi_mute"]:
