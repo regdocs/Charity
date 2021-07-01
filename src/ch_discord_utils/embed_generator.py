@@ -41,10 +41,12 @@ def create_embed(
     return embed
 
 def meta_message(
+    colour = 0xf71e4b,
     description = "",
     image_url = ""
     ):
     edict  = {
+        "colour" : colour,
         "description" : description,
         "image" : {
             "url" : image_url
