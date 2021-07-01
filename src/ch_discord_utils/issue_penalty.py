@@ -7,7 +7,7 @@ import typing
 async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, member_id, reason = None, duration = None, delete_message_days = 0):
     guild = charity.get_guild(server_id)
     user = charity.get_user(member_id)
-    await user.send(embed = meta_message(description = "**`{}:`** You have been *banned*.\n**`INFRACTION:`** {}".format(guild.name, reason)))
+    await user.send(embed = meta_message(description = "**`{}:`** You have been *banned*" + ("" if duration == None else f" for *{duration} day(s)*") + ".\n**`INFRACTION:`** {}".format(guild.name, reason)))
     await guild.ban(
         user = user,
         reason = reason,
@@ -47,7 +47,7 @@ async def ch_unban(issuer: typing.Union[discord.Member, discord.User], server_id
         user = user,
         reason = reason,
     )
-    await user.send(embed = meta_message(description = "**`{}:`** You have been *unbanned*.\n**`REASON`** {}".format(guild.name, reason)))
+    await user.send(embed = meta_message(description = "**`{}:`** You have been *unbanned*.\n**`REASON:`** {}".format(guild.name, reason)))
     gconfig = clc_gconfig.find_one({"_id" : server_id})
     if gconfig["moderation_config"]["logger_config"]["module_active"]:
         if gconfig["moderation_config"]["logger_config"]["bool_on_member_unban"]:
