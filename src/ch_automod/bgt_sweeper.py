@@ -40,12 +40,12 @@ async def sweep_mutes():
                     reason = "Mute duration expired"
                 )
 
-@sweep_warnings.before_loop
+@sweep_mutes.before_loop
 async def before_sweep_mutes():
     await charity.wait_until_ready()
 
 @tasks.loop(seconds = 30)
-async def sweep_tban():
+async def sweep_tbans():
     current_tse = time.time()
     query = { "active_timed_infractions" : { "$elemMatch" : { "penalty" : "tban", "termination_tse" : { "$lte" : current_tse } } } }
     for doc in clc_usrinfract.find(query): 
@@ -66,10 +66,10 @@ async def sweep_tban():
                     reason = "Temporary ban duration expired"
                 )
 
-@sweep_warnings.before_loop
-async def before_sweep_tban():
+@sweep_tbans.before_loop
+async def before_sweep_tbans():
     await charity.wait_until_ready()
 
 sweep_warnings.start()
 sweep_mutes.start()
-sweep_tban.start()
+sweep_tbans.start()
