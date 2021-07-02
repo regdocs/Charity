@@ -36,6 +36,7 @@ from ch_moderation.schedule import *
 
 # fun
 from ch_fun.hello import *
+from ch_fun.starboard import *
 
 # solaris exclusive
 from ch_solaris.modmail import *
