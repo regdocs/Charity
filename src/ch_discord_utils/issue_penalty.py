@@ -9,7 +9,7 @@ async def ch_ban(issuer: typing.Union[discord.Member, discord.User], server_id, 
     user = charity.get_user(member_id)
     await user.send(
         embed = meta_message(
-            description = "**`{}:`** You have been *banned*" + ("" if duration == None else f" for *{duration} day(s)*") + ".\n**`INFRACTION:`** {}".format(guild.name, reason),
+            description = "**`{guild.name}:`** You have been *banned*" + ("" if duration == None else f" for *{duration} day(s)*") + ".\n**`INFRACTION:`** {reason}".format(guild.name, reason),
             colour = 0xff0000
             )
         )
