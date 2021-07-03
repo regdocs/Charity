@@ -8,6 +8,8 @@ import datetime, time
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def unmute(ctx, member: discord.Member, *, message_arg: str):
+    if ctx.author.top_role.position <= member.top_role.position:
+        raise Exception("Cannot execute moderation commands for members ranked same or higher than you.")
     gconfig = clc_gconfig.find_one({"_id" : ctx.guild.id})
     mute_role_id = gconfig['moderation_config']['mute_config']['guild_mute_role_id']
     if mute_role_id == None:

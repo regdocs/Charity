@@ -8,6 +8,8 @@ import time, datetime, typing
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def warn(ctx, member: discord.Member, duration: typing.Optional[float] = 86400, *, message_arg: str):
+    if ctx.author.top_role.position <= member.top_role.position:
+        raise Exception("Cannot execute moderation commands for members ranked same or higher than you.")
     await ch_warn(
         issuer = ctx.author,
         server_id = ctx.guild.id,

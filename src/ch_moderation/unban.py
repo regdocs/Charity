@@ -8,6 +8,8 @@ import datetime, time
 @charity.command()
 @commands.has_any_role("Alpha tester", 840545860101210122, 830486598050119740, 843198710782361682, 836122037009121312)
 async def unban(ctx, member: discord.User, *, message_arg):
+    if not ctx.channel.permissions_for(ctx.author).ban_members:
+        raise Exception("You don't have the permissions to execute this command.")
     await ch_unban(
         issuer = ctx.author,
         server_id = ctx.guild.id,
