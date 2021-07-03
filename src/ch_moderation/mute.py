@@ -17,6 +17,9 @@ async def mute(ctx, member: discord.Member, duration: float, *, message_arg: str
         raise Exception("The member is already muted.")
     roles_at_ini_tse = member.roles
     roles_at_ini_tse.pop(0)
+    nitro_booster_role = ctx.guild.premium_subscriber_role
+    if nitro_booster_role in roles_at_ini_tse:
+        roles_at_ini_tse.remove(nitro_booster_role)
     if gconfig['moderation_config']['mute_config']['bool_remove_existing_roles_and_reassign']:
         await member.remove_roles(*roles_at_ini_tse)
     await ch_mute(
