@@ -39,6 +39,18 @@ async def sweep_mutes():
                     member_id = doc["user_id"],
                     reason = "Mute duration expired"
                 )
+                gconfig = clc_gconfig.find_one({ '_id' : doc['guild_id'] })
+                if gconfig["moderation_config"]["mute_config"]["bool_remove_existing_roles_and_reassign"]:
+                    for x in doc["active_timed_infractions"]:
+                        if x["penalty"] == "mute":
+                            t = []
+                            guild = charity.get_guild(doc['guild_id'])
+                            for i in x["r@ini_tse"]:
+                                t.append(guild.get_role(i))
+                            nitro_booster_role = guild.premium_subscriber_role
+                            if nitro_booster_role in t:
+                                t.remove(nitro_booster_role)
+                            await guild.get_member(doc['user_id']).add_roles(*t)
 
 @sweep_mutes.before_loop
 async def before_sweep_mutes():
