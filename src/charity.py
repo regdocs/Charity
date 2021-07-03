@@ -1,6 +1,7 @@
 # API Trigger & RDBMS
 from ch_boot.client_token import *
 from ch_boot.on_guild_join import *
+from ch_boot.ccmd import *
 
 # welcome
 from ch_welcome.welcome import *               # | requires setup
