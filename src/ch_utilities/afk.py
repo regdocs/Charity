@@ -24,15 +24,16 @@ async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
             await ctx.reply(":warning: `Your AFK note cannot contain links.`")
             return
     entry = {
-        u"_id" : ctx.author.id,
+        u"user_id" : ctx.author.id,
+        u"server_id" : ctx.guild.id,
         u"afk_note" : u"{}".format(afkstring)
     }
     await ctx.message.add_reaction("🌙")
     await ctx.channel.send(f"**{ctx.author.mention} `Set your AFK`** :ballot_box_with_check:")
     await asyncio.sleep(3)
-    retrieved = clc_afk.find_one({"_id" : ctx.author.id})
+    retrieved = clc_afk.find_one({"user_id" : ctx.author.id, "server_id" : ctx.guild.id})
     if retrieved != None:
-        clc_afk.update_one({"_id" : ctx.author.id}, {"$set" : {u"afk_note" : u"{}".format(afkstring)}})
+        clc_afk.update_one({"user_id" : ctx.author.id, "server_id" : ctx.guild.id}, {"$set" : {u"afk_note" : u"{}".format(afkstring)}})
     else:
         clc_afk.insert_one(entry)
 
@@ -52,7 +53,7 @@ async def ifpingonafk(message):
         return member
     for x in all_mentions:
         member = return_discordMember_from_mention(x)
-        retrieved = clc_afk.find_one({"_id" : x.id})
+        retrieved = clc_afk.find_one({"user_id" : x.id, "server_id" : message.guild.id})
         if retrieved is not None:
             if retrieved["afk_note"] == '\0':
                 await message.channel.send(f"**`{member.display_name} is AFK and umm, they didn't leave a note`** :smiling_face_with_tear:")
@@ -61,7 +62,7 @@ async def ifpingonafk(message):
 
 @charity.listen("on_message")
 async def removeafk(message):
-    retrieved = clc_afk.find_one({"_id" : message.author.id})
+    retrieved = clc_afk.find_one({"user_id" : message.author.id, "server_id" : message.guild.id})
     if retrieved != None and message.content.startswith(";afk"):
         return
     if retrieved == None:
