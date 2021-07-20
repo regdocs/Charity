@@ -1,5 +1,5 @@
 import discord
-from google_trans_new import google_translator, constant
+from ch_discord_utils.gtrans import google_translator, constant
 from discord.ext import commands, tasks
 from ch_discord_utils.embed_generator import *
 from ch_boot.startup import *
