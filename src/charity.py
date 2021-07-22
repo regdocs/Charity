@@ -17,7 +17,7 @@ from ch_utilities.songlyrics import *
 
 # automod
 from ch_automod.antimassmention import *       # | requires setup
-from ch_automod.antispam import *              # | requires setup
+# from ch_automod.antispam import *              # | requires setup
 from ch_automod.bgt_sweeper import *           # | background process
 
 # moderation
