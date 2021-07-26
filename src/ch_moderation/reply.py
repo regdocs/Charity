@@ -36,7 +36,7 @@ async def reply(
                 if i.id == int(channel_id):
                     dump = await i.fetch_message(jump_url[-18:])
                     break
-            await dump.send(content = msg, embed = embed)
+            await dump.reply(content = msg, embed = embed)
             await ctx.message.add_reaction("☑️")
             return
         elif x == "--raw-embed":
@@ -58,7 +58,7 @@ async def reply(
                 if i.id == int(channel_id):
                     dump = await i.fetch_message(jump_url[-18:])
                     break
-            await dump.send(embed = embed)
+            await dump.reply(embed = embed)
             await ctx.message.add_reaction("☑️")
             return
     dump = 0
