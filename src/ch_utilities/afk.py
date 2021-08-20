@@ -17,8 +17,8 @@ async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
     if len(afkstring) > maxlength:
         await ctx.reply(f":warning: `Your AFK note cannot exceed {maxlength} characters.`")
         return
-    if ctx.message.mention_everyone or '@everyone' in ctx.message.content:
-        await ctx.reply(f":warning: `Your AFK note cannot mention everyone.`")
+    if '@everyone' in ctx.message.content or '@here' in ctx.message.content:
+        await ctx.reply(f":warning: `Your AFK note cannot contain '@everyone' or '@here'.`")
         return
     if gconfig["utilities_config"]["afk_config"]["bool_link_allowed"] == False:
         regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
