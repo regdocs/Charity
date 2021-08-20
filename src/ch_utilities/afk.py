@@ -17,7 +17,7 @@ async def afk(ctx, *, afkstring: typing.Optional[str] = "\0"):
     if len(afkstring) > maxlength:
         await ctx.reply(f":warning: `Your AFK note cannot exceed {maxlength} characters.`")
         return
-    if ctx.message.mention_everyone:
+    if ctx.message.mention_everyone or '@everyone' in ctx.message:
         await ctx.reply(f":warning: `Your AFK note cannot mention everyone.`")
         return
     if gconfig["utilities_config"]["afk_config"]["bool_link_allowed"] == False:
