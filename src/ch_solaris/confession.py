@@ -23,7 +23,7 @@ async def vent_out(message):
         "color" : 0xf71e4b,
         "author" : {
             "name" : "Anonymous",
-            "icon_url" : "https://lh3.googleusercontent.com/proxy/Pz5KgTRUmlIUMxxwl48WenO1yVnN-sOD4SJBHHv7LWsW0D5mlvivurY3aQfG4TtFNSW-OW9uIuneOiISBpOimUHqIDmliO0m1lW1H3zSVq7c_Vtg0w"
+            "icon_url" : "https://www.ihep.org/wp-content/themes/ihep-theme/assets/images/user-profile.jpg"
         },
         "title" : key_title_value,
         "description" : msg,
