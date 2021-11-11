@@ -66,10 +66,11 @@ async def image(ctx, limit: typing.Optional[int] = 1, *, searchstring):
     links = download(searchstring, limit=limit, adult_filter_off=False, timeout=60, verbose=False)
     if links[0] == 0:
         await ctx.reply(embed=meta_message(colour=0x007c6d, description=f'No image results found :face_in_clouds: Try searching again with related keywords?'))
+        return
     for j in links:
         await ctx.reply(embed=meta_message(colour=0x007c6d, description=f'`IMAGE RESULT #{links.index(j)+1}` from [Bing](https://bing.com) & the [MEDIA LINK]({j})', image_url=j), mention_author=False)
 
 @image.error
 async def web_error(ctx, error):
     msg = error
-    await ctx.reply('An unexpected error occured :(\n**!**:bellhop: <@799186130654199809>')
+    await ctx.reply(error)
