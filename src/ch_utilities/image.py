@@ -67,7 +67,7 @@ async def image(ctx, limit: typing.Optional[int] = 1, *, searchstring):
     if links[0] == 0:
         await ctx.reply(embed=meta_message(colour=0x007c6d, description=f'No image results found :face_in_clouds: Try searching again with related keywords?'))
     for j in links:
-        await ctx.reply(embed=meta_message(colour=0x007c6d, description=f'`IMAGE RESULT #{links.index(j)+1}` from [`Bing`](https://bing.com) & the [**`MEDIA LINK`**]({j})', image_url=j), mention_author=False)
+        await ctx.reply(embed=meta_message(colour=0x007c6d, description=f'`IMAGE RESULT #{links.index(j)+1}` from [Bing](https://bing.com) & the [MEDIA LINK]({j})', image_url=j), mention_author=False)
 
 @image.error
 async def web_error(ctx, error):
