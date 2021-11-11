@@ -12,6 +12,7 @@ from ch_utilities.dictionary import *
 from ch_utilities.poll import *
 from ch_utilities.translate import *
 from ch_utilities.web import *
+from ch_utilities.image import *
 from ch_utilities.youtube import *
 from ch_utilities.songlyrics import *
 
