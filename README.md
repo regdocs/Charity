@@ -10,7 +10,7 @@
 Versatile moderation bot utilising modern Pythonic Discord API (PyPi v1.7.2) with many utilities, and a few fun modules for an invite-only global community language server that I administer. Charity uses a self-hosted MongoDB database on the backend for a few flexible user-data modules and is entirely written in Python.
 
 ## Development
-This project is in its beta phase and it might be a while before it sees the light of dawn with an alpha release. There are several exploitable security vulnerabilities in the code and the server configurator is failing my UX expectations and will not have a public release until a few more subversions. Until then, some moderator and auto-moderator features will be disabled.
+This project is in its beta phasea and will forever remain in its beta phase. The server configurator is failing my UX expectations and a few auto-moderator and moderator featres will be disabled.
 
 ## Features
 The following is an exhaustive list of all the features I've been able to succesfully implement from scratch so far (this section may not be updated with the latest developments):<br><br>
@@ -52,7 +52,7 @@ The following is an exhaustive list of all the features I've been able to succes
 This is an abandoned project. In case you'd like to revive it using Golang / Node.js, find me on Discord at `Anathema#3633` or reach me out via [mail](mailto:jay.dnb@outlook.in).
 
 ## Invite link
-*I'd not recommend using Charity in a full-fledged active community*. [Tap to invite Charity#2894 to your guild.](https://discord.com/api/oauth2/authorize?client_id=838831095730143283&permissions=8&scope=bot)
+[Tap to invite Charity#2894 to your guild.](https://discord.com/api/oauth2/authorize?client_id=838831095730143283&permissions=8&scope=bot)
 
 ## License
 [`LICENSE`](https://github.com/jay-io/Charity/blob/dev/LICENSE) This project is licensed under the GNU General Public License v3.0.
