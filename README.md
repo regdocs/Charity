@@ -11,7 +11,7 @@
 Versatile moderation bot utilising modern Pythonic Discord API (PyPi v1.7.2) with many utilities, and a few fun modules for an invite-only global community language server that I administer. Charity uses a self-hosted MongoDB database on the backend for a few flexible user-data modules and is entirely written in Python.
 
 ## Development
-This project is in its beta phasea and will forever remain in its beta phase. The server configurator is failing my UX expectations and a few auto-moderator and moderator featres will remain disabled.
+This project is in its beta phasea and will forever remain in its beta phase. The server configurator is failing my UX expectations and a few auto-moderator and moderator features will remain disabled.
 
 ## Features
 The following is an exhaustive list of all the features I've been able to succesfully implement from scratch so far (this section may not be updated with the latest developments):<br><br>
