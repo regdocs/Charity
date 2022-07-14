@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/badge/discord.py-v1.7.2-blue"> <img src="https://img.shields.io/badge/database-MongoDB-109f45"> <img src="https://img.shields.io/badge/charity-v1.0.2 beta (final release)-red"> <img src="https://img.shields.io/badge/heroku-active-blueviolet"> <img src="https://img.shields.io/badge/status-offline-green">
+<img src="https://img.shields.io/badge/discord.py-v1.7.2-blue"> <img src="https://img.shields.io/badge/database-MongoDB-109f45"> <img src="https://img.shields.io/badge/charity-v1.0.2 beta (final release)-red"> <img src="https://img.shields.io/badge/heroku-active-blueviolet"> <img src="https://img.shields.io/badge/status-offline-red">
 <p align="center"><img src="https://cdn.discordapp.com/attachments/871821842694959104/929501481927848056/Screenshot_from_2022-01-09_03-37-02.png" /></p>
 
 <h1 align="center" size="25">
