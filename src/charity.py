@@ -8,7 +8,6 @@ from ch_welcome.welcome import *               # | requires setup
 
 # utilities
 from ch_utilities.afk import *
-from ch_utilities.dictionary import *
 from ch_utilities.poll import *
 from ch_utilities.translate import *
 from ch_utilities.web import *
