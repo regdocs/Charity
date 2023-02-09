@@ -4,8 +4,6 @@ from ch_boot.startup import *
 
 @charity.command(name = "hello")
 async def say_hello(ctx, arg):
-    if ctx.author.id == 805108723387334657:
-        await ctx.reply("Hello Momma! Stay safe. <:heartz:844352117674082305>")
     elif ctx.author.id == 799186130654199809:
         await ctx.reply("Hey Dad! <:heartz:844352117674082305>")
     elif ctx.author.id == 819439855880372246:
