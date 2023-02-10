@@ -1,7 +1,7 @@
 <img src="https://img.shields.io/badge/discord.py-v1.7.2-blue"> <img src="https://img.shields.io/badge/database-MongoDB-109f45"> <img src="https://img.shields.io/badge/charity-v1.0.2 beta (final release)-red"> <img src="https://img.shields.io/badge/heroku-active-blueviolet"> <img src="https://img.shields.io/badge/status-offline-red">
 
 <h1 align="center" size="25">
-  <pre><code>Charity#2894</code></pre>
+  <pre><code>Snowflake#2894</code></pre>
 </h1>
 
 <h6>This repository is deprecated and unmaintained</h6>
